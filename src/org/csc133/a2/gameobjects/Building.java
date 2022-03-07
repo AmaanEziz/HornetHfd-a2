@@ -41,8 +41,6 @@ public class Building extends Fixed {
         double translationY = getMapSize().getHeight() * Y_SHIFT[blueprint]
                             + getHeight() / 2f;
 
-        // Local transform.
-        //
         this.translate(translationX, translationY);
         this.scale(1, -1);
 
@@ -106,12 +104,10 @@ public class Building extends Fixed {
         for(Fire fireA : fires) {
             fireAreas += fireA.getArea();
             for(Fire fireB : fires) {
-                // Skip if same fire or intersection already calculated.
-                //
                 if(fireA == fireB || index[i][j] == 1) {
                     j++;
                 }
-                else if(theyIntersect(fireA, fireB)) {
+                else if(is_Intersecting(fireA, fireB)) {
                     fireAreas -= findIntersectionArea(fireA, fireB);
 
                     // Mark as solved.
@@ -125,7 +121,7 @@ public class Building extends Fixed {
         }
     }
 
-    private boolean theyIntersect(Fire fireA, Fire fireB) {
+    private boolean is_Intersecting(Fire fireA, Fire fireB) {
         return Rectangle2D.intersects(fireA.getX(),    fireA.getY(),
                                       fireA.getSize(), fireA.getSize(),
                                       fireB.getX(),    fireB.getY(),

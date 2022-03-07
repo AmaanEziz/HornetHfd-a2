@@ -115,7 +115,6 @@ public class Helicopter extends Movable implements Steerable {
         }
     }
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private final ArrayList<GameObject> helicopterParts;
     private Helicopter_Body_Circle_Part HeliBack;
     private int fuel;
@@ -203,11 +202,6 @@ public class Helicopter extends Movable implements Steerable {
         }
         return instance;
     }
-
-
-
-
-
 
     @Override
     public void localDraw(Graphics g, Point containerOrigin,

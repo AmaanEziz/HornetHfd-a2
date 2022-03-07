@@ -16,16 +16,11 @@ public class Fire extends Fixed implements Observer {
     private final Random rand;
     private final FireDispatch subject;
 
-    //````````````````````````````````````````````````````````````````````````
-    // Observer Pattern
     @Override
     public void update(Observer o) {
         fireState.update(o);
     }
 
-    //````````````````````````````````````````````````````````````````````````
-    // Fire State Pattern
-    //
     private abstract class FireState {
         Fire getFire() {
             return Fire.this;
@@ -44,7 +39,6 @@ public class Fire extends Fixed implements Observer {
         void localDraw(Graphics g, Point containerOrigin, Point screenOrigin) {}
     }
 
-    //````````````````````````````````````````````````````````````````````````
     private class UnStarted extends FireState {
         @Override
         void start() {
@@ -52,16 +46,12 @@ public class Fire extends Fixed implements Observer {
         }
     }
 
-    //````````````````````````````````````````````````````````````````````````
     private class Burning extends FireState {
         @Override
         void grow() {
             if(size > 0) {
                 int growthRate = 4;
 
-                // This is to deal with the exponential growth, where
-                // it grows too fast once it becomes a certain size.
-                //
                 if(size > 200) {
                     growthRate /= 2;
                 }
@@ -117,10 +107,8 @@ public class Fire extends Fixed implements Observer {
         }
     }
 
-    //````````````````````````````````````````````````````````````````````````
     private class Extinguished extends FireState {}
 
-    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public Fire(Dimension mapSize, int radius, FireDispatch subject) {
         super(ColorUtil.MAGENTA, mapSize, radius * 2, radius * 2);
         setFont(Font.createSystemFont(FACE_MONOSPACE, STYLE_BOLD, SIZE_SMALL));

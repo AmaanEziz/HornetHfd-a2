@@ -24,8 +24,6 @@ public class GameObjectCollection<T> implements Iterable<T> {
         gameObjects = new CopyOnWriteArrayList<>();
     }
 
-    // Return a sub-collection of objects of the same type.
-    //
     private CopyOnWriteArrayList<T> getMonoObjects(Class<?> classType) {
         CopyOnWriteArrayList<T> go = new CopyOnWriteArrayList<>();
         gameObjects.stream()
@@ -34,9 +32,6 @@ public class GameObjectCollection<T> implements Iterable<T> {
         return go;
     }
 
-    /* Following castings are legal as long as the getMonoObjects method
-       returns a collection of objects of the specified type.
-    */
     @SuppressWarnings("unchecked")
     public CopyOnWriteArrayList<Fire> getFires() {
         return (CopyOnWriteArrayList<Fire>) getMonoObjects(Fire.class);

@@ -13,9 +13,9 @@ import org.csc133.a2.commands.*;
 import org.csc133.a2.commands.*;
 
 public class ControlCluster extends Container {
-    private final Container stackLeft  = new Container(new GridLayout(1, 3));
-    private final Container stackMid   = new Container(new GridLayout(1, 5));
-    private final Container stackRight = new Container(new GridLayout(1, 3));
+    private final Container NavBarLeft  = new Container(new GridLayout(1, 3));
+    private final Container NavBarMid   = new Container(new GridLayout(1, 5));
+    private final Container NavBarRight = new Container(new GridLayout(1, 3));
     private final Button bLeft;
     private final Button bRight;
     private final Button bFight;
@@ -23,16 +23,11 @@ public class ControlCluster extends Container {
     private final Button bDrink;
     private final Button bBrake;
     private final Button bAccel;
-    private final Button bRestart;
-    private String[] zoomButtonText;
-    private int zoomIndex = 0;
 
     public ControlCluster(MapView mv) {
         setLayout(new BorderLayout());
 
-        // Component's background is automatically transparent (0). Removing
-        // the transparency allows the change of color to be visible.
-        //
+
         this.getAllStyles().setBgColor(ColorUtil.WHITE);
         this.getAllStyles().setBgTransparency(255);
 
@@ -43,14 +38,10 @@ public class ControlCluster extends Container {
         bDrink   = buttonMaker(new DrinkCommand(), "Drink");
         bBrake   = buttonMaker(new BrakeCommand(), "Brake");
         bAccel   = buttonMaker(new AccelerateCommand(), "Accel");
-        bRestart = buttonMaker(new RestartCommand(), "Restart");
-
         Button.setSameWidth(bLeft, bRight, bFight, bDrink, bAccel, bBrake);
         addButtons();
     }
 
-    // Binds command to button and changes appearance.
-    //
     private Button buttonMaker(Command cmd, String btnText) {
         Button button = new Button(btnText);
         button.setCommand(cmd);
@@ -71,28 +62,27 @@ public class ControlCluster extends Container {
     }
 
     private void addButtons() {
-        // Group buttons in a stack to make them easier to place.
+        // Group buttons in a NavBar to make them easier to place.
         //
-        stackLeft.add(bLeft);
-        stackLeft.add(bRight);
-        stackLeft.add(bFight);
-        stackMid.add(bExit);
-        stackMid.add(bRestart);
-        stackRight.add(bDrink);
-        stackRight.add(bBrake);
-        stackRight.add(bAccel);
+        NavBarLeft.add(bLeft);
+        NavBarLeft.add(bRight);
+        NavBarLeft.add(bFight);
+        NavBarMid.add(bExit);
+        NavBarRight.add(bDrink);
+        NavBarRight.add(bBrake);
+        NavBarRight.add(bAccel);
 
-        stackLeft.getAllStyles().setBgColor(ColorUtil.LTGRAY);
-        stackLeft.getAllStyles().setBgTransparency(255);
-        stackRight.getAllStyles().setBgColor(ColorUtil.LTGRAY);
-        stackRight.getAllStyles().setBgTransparency(255);
+        NavBarLeft.getAllStyles().setBgColor(ColorUtil.LTGRAY);
+        NavBarLeft.getAllStyles().setBgTransparency(255);
+        NavBarRight.getAllStyles().setBgColor(ColorUtil.LTGRAY);
+        NavBarRight.getAllStyles().setBgTransparency(255);
 
 
         ((BorderLayout)this.getLayout()).setCenterBehavior(
                                         BorderLayout.CENTER_BEHAVIOR_CENTER);
-        add(BorderLayout.WEST, stackLeft);
-        add(BorderLayout.CENTER, stackMid);
-        add(BorderLayout.EAST, stackRight);
+        add(BorderLayout.WEST, NavBarLeft);
+        add(BorderLayout.CENTER, NavBarMid);
+        add(BorderLayout.EAST, NavBarRight);
     }
 
 
