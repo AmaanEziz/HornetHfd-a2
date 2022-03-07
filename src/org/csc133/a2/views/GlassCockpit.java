@@ -10,13 +10,13 @@ import org.csc133.a2.gameobjects.Helicopter;
 
 public class GlassCockpit extends Container {
     private final GameWorld gw;
-//    private final DigitComponent heading;
-//    private final DigitComponent speed;
-//    private final DigitComponent fuel;
-//    private final DigitComponent numFires;
-//    private final DigitComponent totalFire;
-//    private final DigitComponent damagePercent;
-//    private final DigitComponent financialLoss;
+    private final DigitComponent heading;
+    private final DigitComponent speed;
+    private final DigitComponent fuel;
+    private final DigitComponent numFires;
+    private final DigitComponent totalFire;
+    private final DigitComponent damagePercent;
+    private final DigitComponent financialLoss;
 
     public GlassCockpit() {
         setLayout(new GridLayout(2, 7));
@@ -24,23 +24,23 @@ public class GlassCockpit extends Container {
         this.getAllStyles().setBgTransparency(255);
         this.getAllStyles().setBgColor(ColorUtil.WHITE);
 
-//        heading       = digitComponentMaker(3, ColorUtil.rgb(255, 0, 0));
-//        speed         = digitComponentMaker(2, ColorUtil.rgb(252, 118, 41));
-//        fuel          = digitComponentMaker(5, ColorUtil.YELLOW);
-//        numFires      = digitComponentMaker(3, ColorUtil.GREEN);
-//        totalFire     = digitComponentMaker(4, ColorUtil.CYAN);
-//        damagePercent = digitComponentMaker(3, ColorUtil.BLUE);
-//        financialLoss = digitComponentMaker(4, ColorUtil.rgb(132, 41, 252));
+        heading       = digitComponentMaker(3, ColorUtil.rgb(255, 0, 0));
+        speed         = digitComponentMaker(2, ColorUtil.rgb(252, 118, 41));
+        fuel          = digitComponentMaker(5, ColorUtil.YELLOW);
+        numFires      = digitComponentMaker(3, ColorUtil.GREEN);
+        totalFire     = digitComponentMaker(4, ColorUtil.CYAN);
+        damagePercent = digitComponentMaker(3, ColorUtil.BLUE);
+        financialLoss = digitComponentMaker(4, ColorUtil.rgb(132, 41, 252));
 
         addHeaderLabels();
-//        addDigitComponents();
-    }
+        addDigitComponents();
+  s  }
 
-//    private DigitComponent digitComponentMaker(int numDigits, int ledColor) {
-//        DigitComponent dc = new DigitComponent(numDigits);
-//        dc.setLedColor(ledColor);
-//        return dc;
-//    }
+    private DigitComponent digitComponentMaker(int numDigits, int ledColor) {
+        DigitComponent dc = new DigitComponent(numDigits);
+        dc.setLedColor(ledColor);
+        return dc;
+    }
 
     private void addHeaderLabels() {
         add(labelMaker("Heading"));
@@ -61,15 +61,15 @@ public class GlassCockpit extends Container {
         return lbl;
     }
 
-//    private void addDigitComponents() {
-//        add(heading);
-//        add(speed);
-//        add(fuel);
-//        add(numFires);
-//        add(totalFire);
-//        add(damagePercent);
-//        add(financialLoss);
-//    }
+    private void addDigitComponents() {
+        add(heading);
+        add(speed);
+        add(fuel);
+        add(numFires);
+        add(totalFire);
+        add(damagePercent);
+        add(financialLoss);
+    }
 
     public void updateDisplay() {
         double totalFireSize    = 0;
@@ -91,21 +91,19 @@ public class GlassCockpit extends Container {
     }
 
     private void updateHelicopterLbl(Helicopter helicopter) {
-//        heading.setValue(helicopter.getHeading());
-        Label hed = new Label();
-
-//        speed.setValue(helicopter.getSpeed());
-//        fuel.setValue(helicopter.getFuel());
+        heading.setValue(helicopter.getHeading());
+        speed.setValue(helicopter.getSpeed());
+        fuel.setValue(helicopter.getFuel());
     }
 
     private void updateFireLbl(int totalFireSize) {
-//        numFires.setValue(gw.getNumOfFires());
-//        totalFire.setValue(totalFireSize);
+        numFires.setValue(gw.getNumOfFires());
+        totalFire.setValue(totalFireSize);
     }
 
     private void updateBuildingLbl(int buildingDmg, int totalFinanceLoss) {
         int percentage = buildingDmg/gw.getNumOfBuildings();
-//        damagePercent.setValue(percentage);
-//        financialLoss.setValue(totalFinanceLoss);
+        damagePercent.setValue(percentage);
+        financialLoss.setValue(totalFinanceLoss);
     }
 }
