@@ -19,7 +19,6 @@ public class ControlCluster extends Container {
     private final Button bLeft;
     private final Button bRight;
     private final Button bFight;
-    private final Button bEngine;
     private final Button bExit;
     private final Button bDrink;
     private final Button bBrake;
@@ -40,7 +39,6 @@ public class ControlCluster extends Container {
         bLeft    = buttonMaker(new TurnLeftCommand(), "Left");
         bRight   = buttonMaker(new TurnRightCommand(), "Right");
         bFight   = buttonMaker(new FightCommand(), "Fight");
-        bEngine  = buttonMaker(new StartEngineCommand(), "Start Engine");
         bExit    = buttonMaker(new ExitCommand(), "Exit");
         bDrink   = buttonMaker(new DrinkCommand(), "Drink");
         bBrake   = buttonMaker(new BrakeCommand(), "Brake");
@@ -48,9 +46,6 @@ public class ControlCluster extends Container {
         bRestart = buttonMaker(new RestartCommand(), "Restart");
 
         Button.setSameWidth(bLeft, bRight, bFight, bDrink, bAccel, bBrake);
-        bEngine.getDisabledStyle().setBgColor(ColorUtil.GRAY);
-        bEngine.getDisabledStyle().setFgColor(ColorUtil.LTGRAY);
-
         addButtons();
     }
 
@@ -82,23 +77,17 @@ public class ControlCluster extends Container {
         stackLeft.add(bRight);
         stackLeft.add(bFight);
         stackMid.add(bExit);
-        stackMid.add(bEngine);
         stackMid.add(bRestart);
         stackRight.add(bDrink);
         stackRight.add(bBrake);
         stackRight.add(bAccel);
 
-        // This paints over those annoying gaps between the buttons that
-        // happen due to button width's rounding error.
-        //
         stackLeft.getAllStyles().setBgColor(ColorUtil.LTGRAY);
         stackLeft.getAllStyles().setBgTransparency(255);
         stackRight.getAllStyles().setBgColor(ColorUtil.LTGRAY);
         stackRight.getAllStyles().setBgTransparency(255);
 
-        // Prevents the centered button from being scaled to fill the
-        // available space.
-        //
+
         ((BorderLayout)this.getLayout()).setCenterBehavior(
                                         BorderLayout.CENTER_BEHAVIOR_CENTER);
         add(BorderLayout.WEST, stackLeft);
@@ -106,26 +95,7 @@ public class ControlCluster extends Container {
         add(BorderLayout.EAST, stackRight);
     }
 
-    public void updateEngineButton() {
-        String state = GameWorld.getInstance().getHelicopterState();
-        switch (state) {
-            case "Off":
-            case "Stopping":
-                editEngineButtonState("Start Engine", state);
-                break;
-            case "Starting":
-            case "Can land":
-            case "Ready":
-                editEngineButtonState("Stop Engine", state);
-                break;
-        }
-    }
 
-    private void editEngineButtonState(String text, String state) {
-        boolean isEnabled = !state.equals("Ready");
-        bEngine.setText(text);
-        bEngine.setEnabled(isEnabled);
-    }
 
     @Override
     public void laidOut() {

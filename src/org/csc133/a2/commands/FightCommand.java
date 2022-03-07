@@ -3,7 +3,7 @@ package org.csc133.a2.commands;
 import com.codename1.ui.Command;
 import com.codename1.ui.events.ActionEvent;
 import org.csc133.a2.GameWorld;
-import org.csc133.a2.gameobjects.PlayerHelicopter;
+import org.csc133.a2.gameobjects.Helicopter;
 
 public class FightCommand extends Command {
     public FightCommand() {
@@ -13,6 +13,6 @@ public class FightCommand extends Command {
     @Override
     public void actionPerformed(ActionEvent evt) {
         GameWorld.getInstance()
-                 .attemptFightFire(PlayerHelicopter.getInstance());
+                 .attemptFightFire(Helicopter.getInstance());
     }
 }

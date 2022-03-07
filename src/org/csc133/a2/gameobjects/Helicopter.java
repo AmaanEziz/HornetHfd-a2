@@ -1,5 +1,6 @@
 package org.csc133.a2.gameobjects;
 
+import com.codename1.charts.util.ColorUtil;
 import com.codename1.ui.Font;
 import com.codename1.ui.Graphics;
 import com.codename1.ui.Transform;
@@ -60,15 +61,10 @@ public class Helicopter extends Movable implements Steerable {
             return currentState;
         }
     }
-
-    //````````````````````````````````````````````````````````````````````````
-    // Helicopter State Pattern
-    //
     private abstract class HelicopterState {
         Helicopter getHelicopter() {
             return Helicopter.this;
         }
-        abstract void startOrStopEngine();
         void steerLeft() {}
         void steerRight() {}
         void accelerate() {}
@@ -81,14 +77,6 @@ public class Helicopter extends Movable implements Steerable {
 
     private class Ready extends HelicopterState {
         @Override
-        void startOrStopEngine() {
-            if(getSpeed() == 0) {
-                getHelicopter().changeState(new Stopping());
-                GameWorld.getInstance().stopChopper();
-            }
-        }
-
-        @Override
         void steerLeft() {
             setHeading(getHeading() + 15);
             getHelicopter().rotate(15);
@@ -99,43 +87,31 @@ public class Helicopter extends Movable implements Steerable {
             setHeading(getHeading() - 15);
             getHelicopter().rotate(-15);
         }
-
         @Override
         void accelerate() {
-            System.out.println("Accelerating");
-
             if(getSpeed() < 10) {
                 setSpeed(getSpeed() + 1);
             }
         }
-
         @Override
         void brake() {
             if(getSpeed() > 0) {
                 setSpeed(getSpeed() - 1);
             }
         }
-
         @Override
         void drink(Transform river, int w, int h) {
             if(water < 1000 && getSpeed() <= 2 && onTopOfObject(river, w, h)) {
                 water += 100;
             }
         }
-
         @Override
         void dumpWater() {
             water = 0;
         }
-
         @Override
         void depleteFuel() {
             fuel -= Math.pow(getSpeed(), 2) + 5;
-        }
-
-        @Override
-        void updateLocalTransforms() {
-            HeliBack.updateLocalTransforms(80);
         }
     }
 
@@ -145,14 +121,13 @@ public class Helicopter extends Movable implements Steerable {
     private int fuel;
     private int water;
     private final static int size = 70;
-    private final int[] partColors;
+    private final int Color;
 
-    public Helicopter(Dimension mapSize, int initFuel, int[] partColors,
-                                                       Transform startPoint) {
-        super(partColors[1], mapSize, size, size);
+    public Helicopter(Dimension mapSize, int initFuel, Transform startPoint) {
+        super(ColorUtil.GREEN, mapSize, size, size);
         water = 0;
         fuel = initFuel;
-        this.partColors = partColors;
+        this.Color = ColorUtil.GREEN;
         setFont(Font.createSystemFont(FACE_SYSTEM, STYLE_BOLD, SIZE_MEDIUM));
 
         this.translate(startPoint.getTranslateX(), startPoint.getTranslateY());
@@ -163,20 +138,14 @@ public class Helicopter extends Movable implements Steerable {
     }
 
     private void buildHelicopter() {
-        helicopterParts.add(new Helicopter_Body_Pointy_Part(partColors[1]));
-        HeliBack = new Helicopter_Body_Circle_Part(partColors[0]);
+        helicopterParts.add(new Helicopter_Body_Pointy_Part(Color));
+        HeliBack = new Helicopter_Body_Circle_Part(Color);
         helicopterParts.add(HeliBack);
 
     }
     public void updateLocalTransforms() {
         helicopterState.updateLocalTransforms();
     }
-
-
-    public void startOrStopEngine() {
-        helicopterState.startOrStopEngine();
-    }
-
     @Override
     public void steerLeft() {
         helicopterState.steerLeft();
@@ -223,6 +192,22 @@ public class Helicopter extends Movable implements Steerable {
                getX() + offset >= object.getTranslateX() - w / 2f &&
                getX() - offset <= object.getTranslateX() + w / 2f;
     }
+    private static Helicopter instance;
+    public static Helicopter getInstance() {
+        if(instance == null) {
+            Dimension mapSize    = GameWorld.getInstance().getMapSize();
+            int initFuel         = GameWorld.getInstance().getInitialFuel();
+            Transform startPoint = GameWorld.getInstance().getTakeOffPoint();
+
+            instance = new Helicopter(mapSize, initFuel, startPoint);
+        }
+        return instance;
+    }
+
+
+
+
+
 
     @Override
     public void localDraw(Graphics g, Point containerOrigin,
@@ -242,11 +227,8 @@ public class Helicopter extends Movable implements Steerable {
         g.drawString("F   : " + fuel,
                      getWidth() + textGap + xOffset,
                      getHeight() + textGap);
-//        g.drawString("W : " + water,
-//                     getWidth() + textGap + xOffset,
-//                     getHeight() + textGap * 2);
-        g.drawString("Speed : " + getSpeed(),
-                getWidth() + textGap + xOffset,
-                getHeight() + textGap * 2);
+        g.drawString("W : " + water,
+                     getWidth() + textGap + xOffset,
+                     getHeight() + textGap * 2);
     }
 }

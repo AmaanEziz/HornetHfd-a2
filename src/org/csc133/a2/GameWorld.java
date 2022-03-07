@@ -28,11 +28,7 @@ public class GameWorld {
     private GameObjectCollection<GameObject> gameObjectCollection;
     private FireDispatch fireDispatch;
     private FlightPath flightPath;
-    private Semaphore semCrashWarning;
-    private Semaphore semCrash;
-    private Semaphore semChopper;
-    private Semaphore semSteam;
-    private Thread musicThread;
+
 
     private GameWorld() {}
 
@@ -50,13 +46,10 @@ public class GameWorld {
         numberOfFires       = 0;
         defaultFireSize     = 5;
         startOfElapsedTime  = TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
-
         rand                 = new Random();
         fireDispatch         = new FireDispatch();
         gameObjectCollection = new GameObjectCollection<>();
         populateGameObjectCollection();
-        initSemaphores();
-        System.out.println("Heli flying");
     }
 
     private void populateGameObjectCollection() {
@@ -69,7 +62,7 @@ public class GameWorld {
         setFireInBuilding();
 
         flightPath = new FlightPath(getTakeOffPoint(), mapSize);
-        gameObjectCollection.add(PlayerHelicopter.getInstance());
+        gameObjectCollection.add(Helicopter.getInstance());
     }
 
     private void setNumberOfFires() {
@@ -115,8 +108,6 @@ public class GameWorld {
     }
 
     private void setFireInBuilding() {
-        // Fires are spawned in the nearest left Building in the collection.
-        //
         for(GameObject go : gameObjectCollection) {
             if(go instanceof Building) {
                 building = (Building)go;
@@ -129,10 +120,6 @@ public class GameWorld {
     }
 
     private void spawnNewFires() {
-        // The index ensures that fires are added in the proper location (to
-        // the right of its container building in the list) for when it gets
-        // referenced.
-        //
         int index = 0;
         for (Building building : gameObjectCollection.getBuildings()) {
             if (willFireSpawn(building)) {
@@ -204,40 +191,35 @@ public class GameWorld {
         return numberOfFires;
     }
 
-    /**
-     * Just to make it easier to abide to the 80-column limit.
-     */
-    private PlayerHelicopter getPlayerHelo() {
-        return PlayerHelicopter.getInstance();
+    private Helicopter getHelicopter() {
+        return Helicopter.getInstance();
     }
 
-    public void startOrStopEngine() {
-        getPlayerHelo().startOrStopEngine();
-    }
+
 
     public void turnLeft() {
-        getPlayerHelo().steerLeft();
+        getHelicopter().steerLeft();
     }
 
     public void turnRight() {
-        getPlayerHelo().steerRight();
+        getHelicopter().steerRight();
     }
 
     public void accelerate() {
         System.out.println("Heli flying");
-        getPlayerHelo().accelerate();
+        getHelicopter().accelerate();
     }
 
     public void brake() {
-        getPlayerHelo().brake();
+        getHelicopter().brake();
     }
 
     private void depleteFuel() {
-        PlayerHelicopter.getInstance().depleteFuel();
+        Helicopter.getInstance().depleteFuel();
     }
 
     private void move(long elapsedTimeInMillis) {
-        PlayerHelicopter.getInstance().move(elapsedTimeInMillis);
+        Helicopter.getInstance().move(elapsedTimeInMillis);
     }
 
     private long getElapsedTimeInMillis() {
@@ -251,7 +233,7 @@ public class GameWorld {
         for(River river : gameObjectCollection.getRiver()) {
                 int w = river.getWidth();
                 int h = river.getHeight();
-                getPlayerHelo().drink(river.getTranslation(), w, h);
+                getHelicopter().drink(river.getTranslation(), w, h);
         }
     }
 
@@ -261,8 +243,6 @@ public class GameWorld {
                     && isHelicopterOverFire(helicopter, fire)
                     && !isExtinguished(fire)) {
                 fire.shrink(helicopter.getWater());
-                semSteam.release();
-
                 if (fire.getSize() <= 0) {
                     updateNumOfFires(-1);
                 }
@@ -324,7 +304,7 @@ public class GameWorld {
 
     private boolean hasLandedOnHelipad() {
         Helipad helipad = getGameObjectCollection().getHelipad().get(0);
-        PlayerHelicopter ph = PlayerHelicopter.getInstance();
+        Helicopter ph = Helicopter.getInstance();
 
         int w = helipad.getWidth();
         int h = helipad.getHeight();
@@ -333,20 +313,18 @@ public class GameWorld {
     }
 
     private boolean isThereFuel() {
-        return  PlayerHelicopter.getInstance().getFuel() > 0;
+        return  Helicopter.getInstance().getFuel() > 0;
     }
 
     public void restartGame() {
         if(Dialog.show("Game Paused", "Are you sure you want to restart " +
                        "the game?", "Yes, restart the game", "No")) {
-            resetEverything();
         }
     }
 
     private void displayWinDialog() {
         if(Dialog.show("Game Over", "You Won!" + "\nScore: " + getScore() +
                        "\nPlay again?", "Heck Yeah!", "Some other time")) {
-            resetEverything();
         }
         else {
             exit();
@@ -361,7 +339,7 @@ public class GameWorld {
         String lossReason = "";
 
         if(!isThereFuel()) {
-            lossReason = "One of the helicopters ran out of fuel!";
+            lossReason = "Helicopters ran out of fuel!";
         }
         else if(allBuildingsBurned()) {
             lossReason = "All buildings burned out!";
@@ -387,16 +365,10 @@ public class GameWorld {
         if(Dialog.show("Game Over", lossReason +
                        "\nScore: 0"  +
                        "\nPlay again?", "Heck Yeah!", "Some other time")) {
-            resetEverything();
         }
         else {
             exit();
         }
-    }
-
-    private void resetEverything() {
-        PlayerHelicopter.getInstance().reset();
-        init();
     }
 
     public void exit() {
@@ -407,7 +379,7 @@ public class GameWorld {
     }
 
     public void updateLocalTransforms() {
-        PlayerHelicopter.getInstance().updateLocalTransforms();
+        Helicopter.getInstance().updateLocalTransforms();
     }
 
 
@@ -417,81 +389,13 @@ public class GameWorld {
 
 
     public String getHelicopterState() {
-        return getPlayerHelo().currentState();
+        return getHelicopter().currentState();
     }
 
-    private void initSemaphores() {
-        semChopper      = new Semaphore(0);
-        semCrashWarning = new Semaphore(0);
-        semCrash        = new Semaphore(0);
-        semSteam        = new Semaphore(0);
+    private boolean isHeliFlying() {
+        return  getHelicopter().currentState().equals("Ready") ||
+                getHelicopter().currentState().equals("Can land");
     }
-
-    public synchronized void initiateChopper() {
-        if(isHeloFlying()) {
-            semChopper.release();
-        }
-    }
-
-    public synchronized void stopChopper() {
-        if(!isHeloFlying()) {
-            semChopper.drainPermits();
-        }
-    }
-
-    public synchronized void initiateCrashWarning() {
-        semCrashWarning.release();
-    }
-
-    private boolean isHeloFlying() {
-        return  getPlayerHelo().currentState().equals("Ready") ||
-                getPlayerHelo().currentState().equals("Can land");
-    }
-
-    private void runCrashWarning() {
-        int startTime = 2000;
-        while(true) {
-            try {
-                semCrashWarning.acquire();
-            } catch (InterruptedException e) { e.printStackTrace(); }
-        }
-    }
-
-    private void runCrash() {
-        while(true) {
-            try {
-                semCrash.acquire();
-            } catch (InterruptedException e) { e.printStackTrace(); }
-        }
-    }
-
-    private void runChopper() {
-        int soundEffectLength = 2100;
-        while(true) {
-            try {
-                semChopper.acquire();
-                Thread.sleep(soundEffectLength);
-
-                if(isHeloFlying()) {
-                    semChopper.release();
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void runSteam() {
-        while(true) {
-            try {
-                semSteam.acquire();
-            } catch (InterruptedException e) { e.printStackTrace(); }
-        }
-    }
-
-
-
-
 
 
     public void tick() {
