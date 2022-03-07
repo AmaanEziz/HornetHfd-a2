@@ -8,15 +8,30 @@ import org.csc133.a2.gameobjects.Building;
 import org.csc133.a2.gameobjects.Fire;
 import org.csc133.a2.gameobjects.Helicopter;
 
+class myLabel extends Label
+{
+    public myLabel(String text)
+    {
+        super(text);
+    }
+    void setValue(int val)
+    {
+        setText(Integer.toString(val));
+    }
+}
+
+
+
+
 public class GlassCockpit extends Container {
     private final GameWorld gw;
-    private final DigitComponent heading;
-    private final DigitComponent speed;
-    private final DigitComponent fuel;
-    private final DigitComponent numFires;
-    private final DigitComponent totalFire;
-    private final DigitComponent damagePercent;
-    private final DigitComponent financialLoss;
+    private final myLabel heading;
+    private final myLabel speed;
+    private final myLabel fuel;
+    private final myLabel numFires;
+    private final myLabel totalFire;
+    private final myLabel damagePercent;
+    private final myLabel financialLoss;
 
     public GlassCockpit() {
         setLayout(new GridLayout(2, 7));
@@ -24,25 +39,23 @@ public class GlassCockpit extends Container {
         this.getAllStyles().setBgTransparency(255);
         this.getAllStyles().setBgColor(ColorUtil.WHITE);
 
-        heading       = digitComponentMaker(3, ColorUtil.rgb(255, 0, 0));
-        speed         = digitComponentMaker(2, ColorUtil.rgb(252, 118, 41));
-        fuel          = digitComponentMaker(5, ColorUtil.YELLOW);
-        numFires      = digitComponentMaker(3, ColorUtil.GREEN);
-        totalFire     = digitComponentMaker(4, ColorUtil.CYAN);
-        damagePercent = digitComponentMaker(3, ColorUtil.BLUE);
-        financialLoss = digitComponentMaker(4, ColorUtil.rgb(132, 41, 252));
+        heading       = LabelMaker( ColorUtil.rgb(255, 0, 0));
+        speed         = LabelMaker( ColorUtil.rgb(252, 118, 41));
+        fuel          = LabelMaker(ColorUtil.YELLOW);
+        numFires      = LabelMaker(ColorUtil.GREEN);
+        totalFire     = LabelMaker(ColorUtil.CYAN);
+        damagePercent = LabelMaker(ColorUtil.BLUE);
+        financialLoss = LabelMaker(ColorUtil.rgb(132, 41, 252));
+        addNavBarLabels();
+        addLabels();
+    }
 
-        addHeaderLabels();
-        addDigitComponents();
-  s  }
-
-    private DigitComponent digitComponentMaker(int numDigits, int ledColor) {
-        DigitComponent dc = new DigitComponent(numDigits);
-        dc.setLedColor(ledColor);
+    private myLabel LabelMaker(int Color) {
+        myLabel dc = new myLabel("");
         return dc;
     }
 
-    private void addHeaderLabels() {
+    private void addNavBarLabels() {
         add(labelMaker("Heading"));
         add(labelMaker("Speed"));
         add(labelMaker("Fuel"));
@@ -52,8 +65,8 @@ public class GlassCockpit extends Container {
         add(labelMaker("Financial Loss $"));
     }
 
-    private Label labelMaker(String text) {
-        Label lbl = new Label(text);
+    private myLabel labelMaker(String text) {
+        myLabel lbl = new myLabel(text);
         lbl.getAllStyles().setAlignment(CENTER);
         lbl.getAllStyles().setFont(Font.createSystemFont(Font.FACE_SYSTEM,
                                                          Font.STYLE_BOLD,
@@ -61,7 +74,7 @@ public class GlassCockpit extends Container {
         return lbl;
     }
 
-    private void addDigitComponents() {
+    private void addLabels() {
         add(heading);
         add(speed);
         add(fuel);
