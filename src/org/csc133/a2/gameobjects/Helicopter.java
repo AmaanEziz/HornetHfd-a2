@@ -16,44 +16,32 @@ import static com.codename1.ui.CN.*;
 
 public class Helicopter extends Movable implements Steerable {
 
-    // Change COCKPIT RADIUS to scale helicopter's size.
-    //
-    private final int   BACK_RADIUS             = 40;
-    private final float BACK_SHIFT_Y            = BACK_RADIUS * 0.2f;
-    private final float FRONT_WIDTH             = BACK_RADIUS * 2.85f;
-    private final float FRONT_HEIGHT            = BACK_RADIUS * 0.48f;
-    private final float FRONT_SHIFT_Y           = BACK_RADIUS * 0.13f;
+    private final int   Helicopter_Radius             = 40;
+    private final float Helicopter_Y_Pos            = Helicopter_Radius * 0.2f;
+    private final float FRONT_WIDTH             = Helicopter_Radius * 2.85f;
+    private final float FRONT_HEIGHT            = Helicopter_Radius * 0.48f;
+    private final float FRONT_SHIFT_Y           = Helicopter_Radius * 0.13f;
 
-    private class HELI_BACK extends Arc {
-        public HELI_BACK(int partColor) {
+    private class Helicopter_Body_Circle_Part extends Arc {
+        public Helicopter_Body_Circle_Part(int partColor) {
             super(  partColor,
-                    2 * BACK_RADIUS,
-                    2 * BACK_RADIUS,
-                    0, BACK_SHIFT_Y,
+                    2 * Helicopter_Radius,
+                    2 * Helicopter_Radius,
+                    0, Helicopter_Y_Pos,
                     1, 1,
                     0, 0, 360);
         }
-        private void updateLocalTransforms(double rotationSpeed) {
-//            this.rotate(rotationSpeed);;
-        ;
-        }
     }
 
-    private class HELI_FRONT extends Rectangle {
-        public HELI_FRONT(int partColor) {
+    private class Helicopter_Body_Pointy_Part extends Rectangle {
+        public Helicopter_Body_Pointy_Part(int partColor) {
             super(  partColor,
                     (int) FRONT_WIDTH,
                     (int) FRONT_HEIGHT,
                     0, - FRONT_SHIFT_Y,
                     1, 1, 0);
         }
-        private void updateLocalTransforms(double rotationSpeed) {
-//            this.rotate(rotationSpeed);
-            ;
-        }
     }
-
-    //````````````````````````````````````````````````````````````````````````
 
     private HelicopterState helicopterState;
     private final int partialFuelConsumption = 3;
@@ -80,88 +68,17 @@ public class Helicopter extends Movable implements Steerable {
         Helicopter getHelicopter() {
             return Helicopter.this;
         }
-
         abstract void startOrStopEngine();
-
         void steerLeft() {}
-
         void steerRight() {}
-
         void accelerate() {}
-
         void brake() {}
-
         void drink(Transform river, int w, int h) {}
-
         void dumpWater() {}
-
         void depleteFuel() {}
         void updateLocalTransforms() {}
     }
 
-    //````````````````````````````````````````````````````````````````````````
-    private class Off extends HelicopterState {
-        @Override
-        void startOrStopEngine() {
-            getHelicopter().changeState(new Starting());
-        }
-    }
-
-    //````````````````````````````````````````````````````````````````````````
-    private class Starting extends HelicopterState {
-        @Override
-        void startOrStopEngine() {
-            getHelicopter().changeState(new Stopping());
-        }
-
-        @Override
-        void depleteFuel() {
-            fuel -= partialFuelConsumption;
-        }
-
-        private void takeOff() {
-            System.out.println("Taking off");
-            getHelicopter().changeState(new Ready());
-            GameWorld.getInstance().initiateChopper();
-        }
-
-        @Override
-        void updateLocalTransforms() {
-            HeliBack.updateLocalTransforms(80);
-            System.out.println("Taking OFf");
-            takeOff();
-//            if(true) {
-//                takeOff();
-//            }
-        }
-    }
-
-    //````````````````````````````````````````````````````````````````````````
-    private class Stopping extends HelicopterState {
-        @Override
-        void startOrStopEngine() {
-            getHelicopter().changeState(new Starting());
-        }
-
-        private void turnOffEngine() {
-            getHelicopter().changeState(new Off());
-        }
-
-        @Override
-        void updateLocalTransforms() {
-            HeliBack.updateLocalTransforms(10);
-
-//            if(rotationalSpeed <= 0) {
-//                // Prevents a negative speed restarting speed.
-//                //
-//                rotationalSpeed = 0;
-//                turnOffEngine();
-//            }
-        }
-
-    }
-
-    //````````````````````````````````````````````````````````````````````````
     private class Ready extends HelicopterState {
         @Override
         void startOrStopEngine() {
@@ -224,7 +141,7 @@ public class Helicopter extends Movable implements Steerable {
 
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private final ArrayList<GameObject> helicopterParts;
-    private HELI_BACK HeliBack;
+    private Helicopter_Body_Circle_Part HeliBack;
     private int fuel;
     private int water;
     private final static int size = 70;
@@ -246,8 +163,8 @@ public class Helicopter extends Movable implements Steerable {
     }
 
     private void buildHelicopter() {
-        helicopterParts.add(new HELI_FRONT(partColors[1]));
-        HeliBack = new HELI_BACK(partColors[0]);
+        helicopterParts.add(new Helicopter_Body_Pointy_Part(partColors[1]));
+        HeliBack = new Helicopter_Body_Circle_Part(partColors[0]);
         helicopterParts.add(HeliBack);
 
     }

@@ -8,7 +8,7 @@ import com.codename1.ui.geom.Dimension;
 import com.codename1.ui.geom.Point;
 import com.codename1.ui.layouts.BorderLayout;
 import org.csc133.a2.GameWorld;
-import Saad.gameobjects.*;
+import org.csc133.a2.gameobjects.*;
 import org.csc133.a2.gameobjects.Fire;
 import org.csc133.a2.gameobjects.GameObject;
 

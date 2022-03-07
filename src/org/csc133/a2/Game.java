@@ -1,8 +1,3 @@
-/*
- * Name: Uriel Diaz Quintero
- * Student ID: ...8442
- */
-
 package org.csc133.a2;
 
 import com.codename1.charts.util.ColorUtil;
@@ -10,7 +5,6 @@ import com.codename1.ui.Form;
 import com.codename1.ui.Graphics;
 import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.util.UITimer;
-import Saad.commands.*;
 import org.csc133.a2.commands.*;
 import org.csc133.a2.views.ControlCluster;
 import org.csc133.a2.views.GlassCockpit;
