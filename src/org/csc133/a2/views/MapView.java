@@ -54,15 +54,8 @@ public class MapView extends Container {
         }
     }
 
-    public void zoom() {
-        zoomIndex++;
-        if(zoomIndex >= numWindows) {
-            zoomIndex = 0;
-        }
-    }
 
-    // Set up the world to Normalized-Device transform.
-    //
+
     private Transform buildWorldToNDXform(float winWidth, float winHeight,
                                           float winLeft, float winBottom) {
         Transform tempTransform = Transform.makeIdentity();
@@ -71,8 +64,6 @@ public class MapView extends Container {
         return tempTransform;
     }
 
-    // Set up the Normalized-Device to Screen transform.
-    //
     private Transform buildNDToDisplayXform(float displayWidth,
                                             float displayHeight) {
         Transform tempTransform = Transform.makeIdentity();
@@ -81,15 +72,9 @@ public class MapView extends Container {
         return tempTransform;
     }
 
-    // Set up the Viewing Transformation Matrix.
-    //
     private void setupVTM(Graphics g) {
         Transform worldToND, ndToDisplay, theVTM;
 
-        // Changing these values move and resize the window from which we see
-        // the world. With a smaller window, everyone looks bigger. With a
-        // bigger window, everything looks smaller.
-        //
         float winH = winTop[zoomIndex] - winBottom[zoomIndex];
         float winW = winRight[zoomIndex] - winLeft[zoomIndex];
 
