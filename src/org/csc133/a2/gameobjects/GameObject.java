@@ -12,7 +12,7 @@ public abstract class GameObject implements Drawable {
     private Dimension mapSize;
     private Dimension dimensions;
     private Font font;
-    private Transform gOriginalXform;
+    private Transform OrgXFormation;
     private final Transform translation;
     private final Transform rotation;
     private final Transform scale;
@@ -100,7 +100,7 @@ public abstract class GameObject implements Drawable {
     Transform preLTransform(Graphics g, Point screenOrigin) {
         Transform gXform = Transform.makeIdentity();
         g.getTransform(gXform);
-        gOriginalXform = gXform.copy();
+        OrgXFormation = gXform.copy();
         gXform.translate(screenOrigin.getX(),screenOrigin.getY());
         return gXform;
     }
@@ -132,8 +132,6 @@ public abstract class GameObject implements Drawable {
     }
 
     void containerTranslate(Graphics g, Point containerOrigin) {
-        // Offsets by the parent container's origin.
-        //
         Transform gXform = Transform.makeIdentity();
         g.getTransform(gXform);
         gXform.translate(containerOrigin.getX(), containerOrigin.getY());
@@ -148,15 +146,15 @@ public abstract class GameObject implements Drawable {
     }
 
     void restoreOriginalTransforms(Graphics g) {
-        g.setTransform(gOriginalXform);
+        g.setTransform(OrgXFormation);
     }
 
-    void applyTextTransforms(Graphics g, Point containerOrigin,
-                             Point screenOrigin) {
+    void applyTextTransforms(Graphics g, Point containerOrigin, Point screenOrigin) {
         g.setColor(color);
         g.setFont(font);
 
         restoreOriginalTransforms(g);
+        g.setTransform(OrgXFormation);
         Transform gXform = preLTransform(g, screenOrigin);
         gXform.translate(getX(), getY());
         gXform.scale(1, -1);
@@ -165,8 +163,7 @@ public abstract class GameObject implements Drawable {
         containerTranslate(g, containerOrigin);
     }
 
-    abstract public void localDraw(Graphics g, Point containerOrigin,
-                                               Point screenOrigin);
+    abstract public void localDraw(Graphics g, Point containerOrigin, Point screenOrigin);
 
     public void draw(Graphics g, Point containerOrigin, Point screenOrigin) {
         g.setColor(color);

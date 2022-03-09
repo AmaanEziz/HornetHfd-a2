@@ -17,8 +17,8 @@ public class Fire extends Fixed implements Observer {
     private final FireDispatch subject;
 
     @Override
-    public void update(Observer o) {
-        fireState.update(o);
+    public void update(Observer x) {
+        fireState.update(x);
     }
 
     private abstract class FireState {
@@ -32,7 +32,7 @@ public class Fire extends Fixed implements Observer {
 
         void shrink(int water) {}
 
-        void update(Observer o) {}
+        void update(Observer x) {}
 
         void checkIfSelected(int x, int y) {}
 
@@ -87,8 +87,8 @@ public class Fire extends Fixed implements Observer {
         }
 
         @Override
-        void update(Observer o) {
-            if(o != Fire.this) {
+        void update(Observer x) {
+            if(x != Fire.this) {
                 selected = false;
                 setColor(ColorUtil.MAGENTA);
             }

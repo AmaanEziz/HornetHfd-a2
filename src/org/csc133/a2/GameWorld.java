@@ -25,7 +25,7 @@ public class GameWorld {
     private Dimension mapSize;
     private Dimension controlSize;
     private ArrayList<Integer> fireSizes;
-    private GameObjectCollection<GameObject> gameObjectCollection;
+    private GameObjectCollection<GameObject> GameObjects;
     private FireDispatch fireDispatch;
     private FlightPath flightPath;
 
@@ -48,13 +48,13 @@ public class GameWorld {
         startOfElapsedTime  = TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
         rand                 = new Random();
         fireDispatch         = new FireDispatch();
-        gameObjectCollection = new GameObjectCollection<>();
+        GameObjects = new GameObjectCollection<>();
         populateGameObjectCollection();
     }
 
     private void populateGameObjectCollection() {
-        gameObjectCollection.add(new River(mapSize));
-        gameObjectCollection.add(new Helipad(mapSize));
+        GameObjects.add(new River(mapSize));
+        GameObjects.add(new Helipad(mapSize));
 
         fireSizes = new ArrayList<>();
         setNumberOfFires();
@@ -62,7 +62,7 @@ public class GameWorld {
         setFireInBuilding();
 
         flightPath = new FlightPath(getTakeOffPoint(), mapSize);
-        gameObjectCollection.add(Helicopter.getInstance());
+        GameObjects.add(Helicopter.getInstance());
     }
 
     private void setNumberOfFires() {
@@ -92,13 +92,9 @@ public class GameWorld {
     private void createBuildingAndFires() {
         int firesToCreate = numberOfFires;
         for (int i = NUMBER_OF_BUILDINGS; i > 0; i--) {
-            gameObjectCollection.add(new Building(mapSize, i - 1));
-
-            // Divides by i to ensure that each building gets a balanced
-            // amount of fires.
-            //
+            GameObjects.add(new Building(mapSize, i - 1));
             for(int j = firesToCreate / i; j > 0; j--) {
-                gameObjectCollection.add(new Fire(mapSize,
+                GameObjects.add(new Fire(mapSize,
                                                   fireSizes.get(0),
                                                   fireDispatch));
                 fireSizes.remove(0);
@@ -108,7 +104,7 @@ public class GameWorld {
     }
 
     private void setFireInBuilding() {
-        for(GameObject go : gameObjectCollection) {
+        for(GameObject go : GameObjects) {
             if(go instanceof Building) {
                 building = (Building)go;
             }
@@ -121,11 +117,11 @@ public class GameWorld {
 
     private void spawnNewFires() {
         int index = 0;
-        for (Building building : gameObjectCollection.getBuildings()) {
+        for (Building building : GameObjects.getBuildings()) {
             if (willFireSpawn(building)) {
                 Fire fire = new Fire(mapSize, defaultFireSize, fireDispatch);
                 building.setFireInBuilding(fire);
-                gameObjectCollection.add(index + 1, fire);
+                GameObjects.add(index + 1, fire);
                 updateNumOfFires(1);
             }
             index++;
@@ -140,7 +136,7 @@ public class GameWorld {
     }
 
     public GameObjectCollection<GameObject> getGameObjectCollection() {
-        return gameObjectCollection;
+        return GameObjects;
     }
 
     public int getInitialFuel() {
@@ -148,7 +144,7 @@ public class GameWorld {
     }
 
     public Transform getTakeOffPoint() {
-        return gameObjectCollection.getHelipad().get(0).takeoffSpot();
+        return GameObjects.getHelipad().get(0).takeoffSpot();
     }
 
     public void layGameMap(Dimension mapSize) {
@@ -172,11 +168,11 @@ public class GameWorld {
     }
 
     public Transform getRiverOrigin() {
-        return gameObjectCollection.getRiver().get(0).getTranslation();
+        return GameObjects.getRiver().get(0).getTranslation();
     }
 
     public Dimension getRiverDimension() {
-        return gameObjectCollection.getRiver().get(0).getDimension();
+        return GameObjects.getRiver().get(0).getDimension();
     }
 
     public void updateSelectedFire(Transform selectedFire) {
@@ -230,7 +226,7 @@ public class GameWorld {
     }
 
     public void drink() {
-        for(River river : gameObjectCollection.getRiver()) {
+        for(River river : GameObjects.getRiver()) {
                 int w = river.getWidth();
                 int h = river.getHeight();
                 getHelicopter().drink(river.getTranslation(), w, h);
@@ -238,7 +234,7 @@ public class GameWorld {
     }
 
     public void attemptFightFire(Helicopter helicopter) {
-        for (Fire fire : gameObjectCollection.getFires()) {
+        for (Fire fire : GameObjects.getFires()) {
             if (helicopterHasWater(helicopter)
                     && isHelicopterOverFire(helicopter, fire)
                     && !isExtinguished(fire)) {
@@ -270,7 +266,7 @@ public class GameWorld {
     }
 
     private void grow() {
-        for(Fire fire : gameObjectCollection.getFires()) {
+        for(Fire fire : GameObjects.getFires()) {
             if(fire.getSize() <= 0 && !isExtinguished(fire)) {
                 updateNumOfFires(-1);
             }
@@ -281,7 +277,7 @@ public class GameWorld {
     }
 
     private void burnBuilding() {
-        for(Building building : gameObjectCollection.getBuildings()) {
+        for(Building building : GameObjects.getBuildings()) {
                 building.accumulateFireAreas();
                 building.setDamagePercentage();
         }
@@ -294,7 +290,7 @@ public class GameWorld {
     }
 
     private boolean areThereFires() {
-        for(Fire fire : gameObjectCollection.getFires()) {
+        for(Fire fire : GameObjects.getFires()) {
             if(!fire.currentState().equals("Extinguished")) {
                 return true;
             }
@@ -339,7 +335,7 @@ public class GameWorld {
         String lossReason = "";
 
         if(!isThereFuel()) {
-            lossReason = "Helicopters ran out of fuel!";
+            lossReason = "Helicopter ran out of fuel!";
         }
         else if(allBuildingsBurned()) {
             lossReason = "All buildings burned out!";
@@ -355,7 +351,7 @@ public class GameWorld {
 
     private double getDamagePercentage() {
         double totalDamagePercentage = 0;
-        for(Building building : gameObjectCollection.getBuildings()) {
+        for(Building building : GameObjects.getBuildings()) {
             totalDamagePercentage += building.getDamagePercentage();
         }
         return totalDamagePercentage / NUMBER_OF_BUILDINGS;
@@ -381,11 +377,6 @@ public class GameWorld {
     public void updateLocalTransforms() {
         Helicopter.getInstance().updateLocalTransforms();
     }
-
-
-
-
-
 
 
     public String getHelicopterState() {
