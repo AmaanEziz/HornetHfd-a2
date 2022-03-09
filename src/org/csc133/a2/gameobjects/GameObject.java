@@ -5,8 +5,9 @@ import com.codename1.ui.Graphics;
 import com.codename1.ui.Transform;
 import com.codename1.ui.geom.Dimension;
 import com.codename1.ui.geom.Point;
+import org.csc133.a2.interfaces.Drawable;
 
-public abstract class GameObject {
+public abstract class GameObject implements Drawable {
     private int color;
     private Dimension mapSize;
     private Dimension dimensions;
@@ -98,38 +99,24 @@ public abstract class GameObject {
 
     Transform preLTransform(Graphics g, Point screenOrigin) {
         Transform gXform = Transform.makeIdentity();
-
-        // Gets the original transform, then copies it.
-        //
         g.getTransform(gXform);
         gOriginalXform = gXform.copy();
-
-        // Move the drawing coordinates back.
-        //
         gXform.translate(screenOrigin.getX(),screenOrigin.getY());
         return gXform;
     }
 
     void localTransforms(Transform gXform) {
-        // Append Objects's Local Transforms to the graphics object's transform.
-        //
         gXform.translate(getX(), getY());
         gXform.concatenate(rotation);
         gXform.scale(getScaleX(), getScaleY());
     }
 
     void postLTransform(Graphics g, Point screenOrigin, Transform gXform) {
-        // Move the drawing coordinates so that the local origin coincides
-        // with the screen origin post local transforms.
-        //
         gXform.translate(-screenOrigin.getX(), -screenOrigin.getY());
         g.setTransform(gXform);
     }
 
     void forwardPrimitiveTranslate(Graphics g, Dimension dimension) {
-        // Does the necessary translation to ensure that the object's local
-        // origin is located directly in its center.
-        //
         Transform gXform = Transform.makeIdentity();
         g.getTransform(gXform);
         gXform.translate(-dimension.getWidth() / 2f,

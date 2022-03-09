@@ -162,6 +162,13 @@ public class Fire extends Fixed implements Observer {
     }
 
     @Override
+    public void draw (Graphics g, Point containerOrigin)
+    {
+        ;
+    }
+
+
+    @Override
     public void localDraw(Graphics g, Point containerOrigin,
                                       Point screenOrigin) {
         fireState.localDraw(g, containerOrigin, screenOrigin);

@@ -25,6 +25,13 @@ public class Arc extends GameObject {
     }
 
     @Override
+    public void draw (Graphics g, Point containerOrigin)
+    {
+        ;
+    }
+
+
+    @Override
     public void localDraw(Graphics g, Point containerOrigin,
                                       Point screenOrigin) {
         g.fillArc(0, 0, getWidth(), getHeight(), startAngle, arcAngle);

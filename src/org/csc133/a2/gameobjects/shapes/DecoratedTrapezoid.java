@@ -24,6 +24,14 @@ public class DecoratedTrapezoid extends GameObject {
         rotate(degreesRotation);
     }
 
+
+    @Override
+    public void draw (Graphics g, Point containerOrigin)
+    {
+        ;
+    }
+
+
     @Override
     public void localDraw(Graphics g, Point containerOrigin,
                                       Point screenOrigin) {

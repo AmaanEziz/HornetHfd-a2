@@ -28,15 +28,20 @@ public class Helipad extends Fixed {
         return getTranslation();
     }
 
+
+    @Override
+    public void draw (Graphics g, Point containerOrigin)
+    {
+        ;
+    }
+
+
+
     @Override
     public void localDraw(Graphics g, Point containerOrigin,
                                       Point screenOrigin) {
-        // Draws the edges of the helipad.
-        //
-        g.drawRect(0, 0, getWidth(), getWidth(), BORDER_THICKNESS);
 
-        // Draws the circle inside the helipad.
-        //
+        g.drawRect(0, 0, getWidth(), getWidth(), BORDER_THICKNESS);
         g.drawArc(HELIPAD_GAP, HELIPAD_GAP,
                   getWidth() - HELIPAD_GAP * 2,
                   getHeight() - HELIPAD_GAP * 2,

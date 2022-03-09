@@ -204,6 +204,13 @@ public class Helicopter extends Movable implements Steerable {
     }
 
     @Override
+    public void draw (Graphics g, Point containerOrigin)
+    {
+        ;
+    }
+
+
+    @Override
     public void localDraw(Graphics g, Point containerOrigin,
                                       Point screenOrigin) {
         reversePrimitiveTranslate(g, getDimension());
@@ -213,16 +220,16 @@ public class Helicopter extends Movable implements Steerable {
             go.draw(g, containerOrigin, screenOrigin);
         }
 
-        int textGap = 35;
+        int separator = 35;
         int xOffset = 60;
 
         applyTextTransforms(g, containerOrigin, screenOrigin);
 
         g.drawString("F   : " + fuel,
-                     getWidth() + textGap + xOffset,
-                     getHeight() + textGap);
+                     getWidth() + separator + xOffset,
+                     getHeight() + separator);
         g.drawString("W : " + water,
-                     getWidth() + textGap + xOffset,
-                     getHeight() + textGap * 2);
+                     getWidth() + separator + xOffset,
+                     getHeight() + separator * 2);
     }
 }

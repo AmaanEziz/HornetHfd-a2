@@ -11,9 +11,6 @@ abstract class Fixed extends GameObject {
 
     @Override
     public void translate(double xOrigin, double yOrigin) {
-        // Prevents Fixed objects from changing their location, unless they
-        // haven't been placed yet.
-        //
         if(!objectPlaced) {
             super.translate(xOrigin, yOrigin);
             objectPlaced = true;

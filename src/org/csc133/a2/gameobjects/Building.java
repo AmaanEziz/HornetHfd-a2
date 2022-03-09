@@ -150,19 +150,29 @@ public class Building extends Fixed {
         return 0;
     }
 
+
+    @Override
+    public void draw (Graphics g, Point containerOrigin)
+    {
+        ;
+    }
+
+
+
+
     @Override
     public void localDraw(Graphics g, Point containerOrigin,
                                       Point screenOrigin) {
         g.setFont(getFont());
-        int textGap = 35;
+        int separator = 35;
 
         g.drawRect(0, 0, getWidth(), getHeight());
 
         g.drawString("V  : " + value,
-                     getWidth() + textGap,
-                     getHeight() - textGap * 2);
+                     getWidth() + separator,
+                     getHeight() - separator * 2);
         g.drawString("D  : " + (int) damagePercentage + "%",
-                     getWidth() + textGap,
-                     getHeight() - textGap);
+                     getWidth() + separator,
+                     getHeight() - separator);
     }
 }
