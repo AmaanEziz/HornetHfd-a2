@@ -18,7 +18,7 @@ public class MapView extends Container {
     private final float[] winRight  = {0, 0, 0};
     private final float[] winTop    = {0, 0, 0};
     private final float[] winBottom = {0, 0, 0};
-    private int zoomIndex  = 0;
+    private int mapIndex  = 0;
     private int numWindows = 0;
 
     public MapView() {
@@ -28,9 +28,8 @@ public class MapView extends Container {
         this.getAllStyles().setBgColor(ColorUtil.BLACK);
     }
 
-    private void initZoomWindows() {
+    private void InitMap() {
         float windowScale = 0.10f;
-
         winLeft[0]  = winBottom[0] = 0;
         winRight[0] = this.getWidth();
         winTop[0]   = this.getHeight();
@@ -65,12 +64,12 @@ public class MapView extends Container {
     private void setupVTM(Graphics g) {
         Transform worldToND, ndToDisplay, theVTM;
 
-        float winH = winTop[zoomIndex] - winBottom[zoomIndex];
-        float winW = winRight[zoomIndex] - winLeft[zoomIndex];
+        float winH = winTop[mapIndex] - winBottom[mapIndex];
+        float winW = winRight[mapIndex] - winLeft[mapIndex];
 
         worldToND = buildWorldToNDXform(winW, winH,
-                                        winLeft[zoomIndex],
-                                        winBottom[zoomIndex]);
+                                        winLeft[mapIndex],
+                                        winBottom[mapIndex]);
         ndToDisplay = buildNDToDisplayXform(getWidth(), getHeight());
 
         theVTM = ndToDisplay.copy();
@@ -115,6 +114,6 @@ public class MapView extends Container {
     public void laidOut() {
         super.laidOut();
         gw.layGameMap(new Dimension(this.getWidth(), this.getHeight()));
-        initZoomWindows();
+        InitMap();
     }
 }
