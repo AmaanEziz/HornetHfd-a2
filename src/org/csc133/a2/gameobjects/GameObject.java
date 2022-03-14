@@ -27,7 +27,6 @@ public abstract class GameObject implements Drawable {
         this.color = color;
         this.mapSize = mapSize;
         dimensions = new Dimension(width, height);
-
         translation = Transform.makeIdentity();
         rotation = Transform.makeIdentity();
         scale = Transform.makeIdentity();
@@ -65,6 +64,37 @@ public abstract class GameObject implements Drawable {
         return dimensions.getHeight();
     }
 
+    float getY() {
+        return translation.getTranslateY();
+    }
+
+    Transform PreLeftTrans(Graphics g, Point Origin_Screen) {
+        Transform gXform = Transform.makeIdentity();
+        g.getTransform(gXform);
+        OrgXFormation = gXform.copy();
+        gXform.translate(Origin_Screen.getX(),Origin_Screen.getY());
+        return gXform;
+    }
+
+    void localTransforms(Transform gXform) {
+        gXform.translate(getX(), getY());
+        gXform.concatenate(rotation);
+        gXform.scale(getScaleX(), getScaleY());
+    }
+
+    void PostLeftTrans(Graphics g, Point Origin_Screen, Transform gXform) {
+        gXform.translate(-Origin_Screen.getX(), -Origin_Screen.getY());
+        g.setTransform(gXform);
+    }
+
+    void forwardPrimitiveTranslate(Graphics g, Dimension dimension) {
+        Transform gXform = Transform.makeIdentity();
+        g.getTransform(gXform);
+        gXform.translate(-dimension.getWidth() / 2f,
+                         -dimension.getHeight() / 2f);
+        g.setTransform(gXform);
+    }
+
     protected void rotate(double degrees) {
         rotation.rotate((float) Math.toRadians(degrees), 0, 0);
     }
@@ -93,36 +123,6 @@ public abstract class GameObject implements Drawable {
         return translation.getTranslateX();
     }
 
-    float getY() {
-        return translation.getTranslateY();
-    }
-
-    Transform preLTransform(Graphics g, Point screenOrigin) {
-        Transform gXform = Transform.makeIdentity();
-        g.getTransform(gXform);
-        OrgXFormation = gXform.copy();
-        gXform.translate(screenOrigin.getX(),screenOrigin.getY());
-        return gXform;
-    }
-
-    void localTransforms(Transform gXform) {
-        gXform.translate(getX(), getY());
-        gXform.concatenate(rotation);
-        gXform.scale(getScaleX(), getScaleY());
-    }
-
-    void postLTransform(Graphics g, Point screenOrigin, Transform gXform) {
-        gXform.translate(-screenOrigin.getX(), -screenOrigin.getY());
-        g.setTransform(gXform);
-    }
-
-    void forwardPrimitiveTranslate(Graphics g, Dimension dimension) {
-        Transform gXform = Transform.makeIdentity();
-        g.getTransform(gXform);
-        gXform.translate(-dimension.getWidth() / 2f,
-                         -dimension.getHeight() / 2f);
-        g.setTransform(gXform);
-    }
 
     void reversePrimitiveTranslate(Graphics g, Dimension dimension) {
         Transform gXform = Transform.makeIdentity();
@@ -149,32 +149,32 @@ public abstract class GameObject implements Drawable {
         g.setTransform(OrgXFormation);
     }
 
-    void applyTextTransforms(Graphics g, Point containerOrigin, Point screenOrigin) {
+    void applyTextTransforms(Graphics g, Point containerOrigin, Point Origin_Screen) {
         g.setColor(color);
         g.setFont(font);
 
         restoreOriginalTransforms(g);
         g.setTransform(OrgXFormation);
-        Transform gXform = preLTransform(g, screenOrigin);
+        Transform gXform = PreLeftTrans(g, Origin_Screen);
         gXform.translate(getX(), getY());
         gXform.scale(1, -1);
-        postLTransform(g, screenOrigin, gXform);
+        PostLeftTrans(g, Origin_Screen, gXform);
         forwardPrimitiveTranslate(g, dimensions);
         containerTranslate(g, containerOrigin);
     }
 
-    abstract public void localDraw(Graphics g, Point containerOrigin, Point screenOrigin);
+    abstract public void localDraw(Graphics g, Point containerOrigin, Point Origin_Screen);
 
-    public void draw(Graphics g, Point containerOrigin, Point screenOrigin) {
+    public void draw(Graphics g, Point containerOrigin, Point Origin_Screen) {
         g.setColor(color);
 
-        Transform gXform = preLTransform(g, screenOrigin);
+        Transform gXform = PreLeftTrans(g, Origin_Screen);
         localTransforms(gXform);
-        postLTransform(g, screenOrigin, gXform);
+        PostLeftTrans(g, Origin_Screen, gXform);
         forwardPrimitiveTranslate(g, dimensions);
         containerTranslate(g, containerOrigin);
 
-        localDraw(g, containerOrigin, screenOrigin);
+        localDraw(g, containerOrigin, Origin_Screen);
         restoreOriginalTransforms(g);
     }
 }

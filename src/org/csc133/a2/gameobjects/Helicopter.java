@@ -23,6 +23,9 @@ public class Helicopter extends Movable implements Steerable {
     private final float FRONT_HEIGHT            = Helicopter_Radius * 0.48f;
     private final float FRONT_SHIFT_Y           = Helicopter_Radius * 0.13f;
 
+
+    private final int direction;
+
     private class Helicopter_Body_Circle_Part extends Arc {
         public Helicopter_Body_Circle_Part(int partColor) {
             super(  partColor,
@@ -45,17 +48,13 @@ public class Helicopter extends Movable implements Steerable {
     }
 
     private HelicopterState helicopterState;
-    private final int partialFuelConsumption = 3;
 
-    private void changeState(HelicopterState helicopterState) {
-        this.helicopterState = helicopterState;
-    }
 
     public String currentState() {
         String currentState = helicopterState.getClass().getSimpleName();
 
-        if(currentState.equals("Ready") && getSpeed() == 0) {
-            return "Can land";
+        if(currentState.equals("READY") && getSpeed() == 0) {
+            return "LAND";
         }
         else {
             return currentState;
@@ -70,7 +69,7 @@ public class Helicopter extends Movable implements Steerable {
         void accelerate() {}
         void brake() {}
         void drink(Transform river, int w, int h) {}
-        void dumpWater() {}
+        void emptywaterstorage() {}
         void depleteFuel() {}
         void updateLocalTransforms() {}
     }
@@ -106,7 +105,7 @@ public class Helicopter extends Movable implements Steerable {
             }
         }
         @Override
-        void dumpWater() {
+        void emptywaterstorage() {
             water = 0;
         }
         @Override
@@ -124,6 +123,7 @@ public class Helicopter extends Movable implements Steerable {
 
     public Helicopter(Dimension mapSize, int initFuel, Transform startPoint) {
         super(ColorUtil.GREEN, mapSize, size, size);
+        direction = 0;
         water = 0;
         fuel = initFuel;
         this.Color = ColorUtil.GREEN;
@@ -140,7 +140,6 @@ public class Helicopter extends Movable implements Steerable {
         helicopterParts.add(new Helicopter_Body_Pointy_Part(Color));
         HeliBack = new Helicopter_Body_Circle_Part(Color);
         helicopterParts.add(HeliBack);
-
     }
     public void updateLocalTransforms() {
         helicopterState.updateLocalTransforms();
@@ -149,36 +148,28 @@ public class Helicopter extends Movable implements Steerable {
     public void steerLeft() {
         helicopterState.steerLeft();
     }
-
     @Override
     public void steerRight() {
         helicopterState.steerRight();
     }
-
     public void accelerate() {
         helicopterState.accelerate();
     }
-
     public void brake() {
         helicopterState.brake();
     }
-
     public void drink(Transform river, int width, int height) {
         helicopterState.drink(river, width, height);
     }
-
-    public void dumpWater() {
-        helicopterState.dumpWater();
+    public void emptywaterstorage() {
+        helicopterState.emptywaterstorage();
     }
-
     public int getWater() {
         return water;
     }
-
     public void depleteFuel() {
         helicopterState.depleteFuel();
     }
-
     public int getFuel() {
         return fuel;
     }
@@ -212,18 +203,18 @@ public class Helicopter extends Movable implements Steerable {
 
     @Override
     public void localDraw(Graphics g, Point containerOrigin,
-                                      Point screenOrigin) {
+                                      Point Origin_Screen) {
         reversePrimitiveTranslate(g, getDimension());
         reverseContainerTranslate(g, containerOrigin);
 
         for(GameObject go : helicopterParts) {
-            go.draw(g, containerOrigin, screenOrigin);
+            go.draw(g, containerOrigin, Origin_Screen);
         }
 
         int separator = 35;
         int xOffset = 60;
 
-        applyTextTransforms(g, containerOrigin, screenOrigin);
+        applyTextTransforms(g, containerOrigin, Origin_Screen);
 
         g.drawString("F   : " + fuel,
                      getWidth() + separator + xOffset,
@@ -231,5 +222,28 @@ public class Helicopter extends Movable implements Steerable {
         g.drawString("W : " + water,
                      getWidth() + separator + xOffset,
                      getHeight() + separator * 2);
+
+//        g.setColor(ColorUtil.YELLOW);
+//        Point c = new Point((int)helicopterParts.get(0).getX() + (size / 2), ((int)helicopterParts.get(0).getY() + (size / 2)));
+//        Point c_1 = new Point((int)helicopterParts.get(1).getX() + (size / 2), ((int)helicopterParts.get(1).getY() + (size / 2)));
+//
+//        double lineX = Math.cos(Math.toRadians(direction + 270));
+//        double lineY = Math.sin(Math.toRadians(direction + 270));
+//        lineX = c_1.getX() + (lineX * 50);
+//        lineY = c_1.getY() + (lineY * 50);
+////        g.fillArc((int)helicopterParts.get(0).getX(), (int)helicopterParts.get(0).getY(), size, size, size, size);
+//        g.drawLine(c_1.getX(), c_1.getY(), (int) lineX, (int) lineY);
+//        Font myFont = Font.createSystemFont(FACE_MONOSPACE, STYLE_BOLD, SIZE_MEDIUM);
+//        g.setFont(myFont);
+////        g.drawString("F : " + fuel, p.getX(), p.getY() + 100);
+////        g.drawString("W : " + waterAmount, p.getX(), p.getY() + 130);
+////
+////        g.drawString("F   : " + fuel,
+////                     getWidth() + separator + xOffset,
+//                     getHeight() + separator);
+//        g.drawString("W : " + water,
+//                     getWidth() + separator + xOffset,
+//                     getHeight() + separator * 2);
+
     }
 }

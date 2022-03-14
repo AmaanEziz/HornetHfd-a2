@@ -29,7 +29,7 @@ public class River extends Fixed {
 
 
     @Override
-    public void localDraw(Graphics g, Point containerOrigin, Point screenOrigin) {
+    public void localDraw(Graphics g, Point containerOrigin, Point Origin_Screen) {
         g.drawRect(0, containerOrigin.getY(), getWidth(), getHeight(),10);
     }
 }

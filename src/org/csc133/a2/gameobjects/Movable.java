@@ -11,24 +11,17 @@ public abstract class Movable extends GameObject {
     }
 
     public void move(long elapsedTimeInMillis) {
-        double speedMultiplier = calcSpeedMultiplier(elapsedTimeInMillis);
+        double speedMultiplier = MakeSpeedMul(elapsedTimeInMillis);
         double angle = Math.toRadians(heading + 90);
-
-        // The speed is multiplied by SPEED_MULTIPLIER to indirectly reduce
-        // the fuel cost of the helicopter's movement.
-        //
         this.translate(speed * speedMultiplier * Math.cos(angle),
                        speed * speedMultiplier * Math.sin(angle));
     }
-
-    private double calcSpeedMultiplier(long elapsedTime) {
+    private double MakeSpeedMul(long elapsedTime) {
         return (elapsedTime / 100f) * 4;
     }
-
     public int getSpeed() {
         return speed;
     }
-
     public int getHeading() {
         return heading;
     }

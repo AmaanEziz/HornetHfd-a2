@@ -95,7 +95,7 @@ public class GlassCockpit extends Container {
 
         for(Building building : gw.getGameObjectCollection().getBuildings()) {
             buildingDmg += building.getDamagePercentage();
-            totalFinanceLoss += building.getFinancialLoss();
+            totalFinanceLoss += building.getLoss();
         }
 
         updateHelicopterLbl(Helicopter.getInstance());

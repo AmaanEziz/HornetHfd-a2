@@ -36,7 +36,7 @@ public class Fire extends Fixed implements Observer {
 
         void checkIfSelected(int x, int y) {}
 
-        void localDraw(Graphics g, Point containerOrigin, Point screenOrigin) {}
+        void localDraw(Graphics g, Point containerOrigin, Point Origin_Screen) {}
     }
 
     private class UnStarted extends FireState {
@@ -99,10 +99,10 @@ public class Fire extends Fixed implements Observer {
         }
 
         @Override
-        void localDraw(Graphics g, Point containerOrigin, Point screenOrigin) {
+        void localDraw(Graphics g, Point containerOrigin, Point Origin_Screen) {
             g.fillArc(0, 0, getWidth(), getWidth(), 0, 360);
 
-            applyTextTransforms(g, containerOrigin, screenOrigin);
+            applyTextTransforms(g, containerOrigin, Origin_Screen);
             g.drawString("" + (int) size, (int) size / 2, (int) size / 2);
         }
     }
@@ -170,7 +170,7 @@ public class Fire extends Fixed implements Observer {
 
     @Override
     public void localDraw(Graphics g, Point containerOrigin,
-                                      Point screenOrigin) {
-        fireState.localDraw(g, containerOrigin, screenOrigin);
+                                      Point Origin_Screen) {
+        fireState.localDraw(g, containerOrigin, Origin_Screen);
     }
 }

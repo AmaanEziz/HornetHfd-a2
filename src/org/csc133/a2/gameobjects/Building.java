@@ -16,12 +16,12 @@ public class Building extends Fixed {
     private int value;
     private double fireAreas;
     private final Random rand;
-    private final double[] X_SHIFT = {0.30, 0.10, 0.80};
-    private final double[] Y_SHIFT = {0.80, 0.10, 0.10};
+    private final double[] x_change = {0.30, 0.10, 0.80};
+    private final double[] y_change = {0.80, 0.10, 0.10};
     private final double[] WIDTHS  = {0.40, 0.10, 0.10};
     private final double[] HEIGHTS = {0.15, 0.40, 0.40};
 
-    public Building(Dimension mapSize, int blueprint) {
+    public Building(Dimension mapSize, int map) {
         super(ColorUtil.rgb(255, 0, 0), mapSize, 0, 0);
         fireAreas = 0;
         damagePercentage = 0;
@@ -29,22 +29,22 @@ public class Building extends Fixed {
         fires = new ArrayList<>();
         setFont(Font.createSystemFont(FACE_SYSTEM, STYLE_BOLD, SIZE_MEDIUM));
 
-        build(blueprint);
+        build(map);
     }
 
-    private void build(int blueprint) {
-        setDimensions((int) (WIDTHS[blueprint] * getMapSize().getWidth()),
-                      (int) (HEIGHTS[blueprint] * getMapSize().getHeight()));
+    private void build(int map) {
+        setDimensions((int) (WIDTHS[map] * getMapSize().getWidth()),
+                      (int) (HEIGHTS[map] * getMapSize().getHeight()));
 
-        double translationX = getMapSize().getWidth() * X_SHIFT[blueprint]
+        double trans_X = getMapSize().getWidth() * x_change[map]
                             + getWidth() / 2f;
-        double translationY = getMapSize().getHeight() * Y_SHIFT[blueprint]
+        double trans_Y = getMapSize().getHeight() * y_change[map]
                             + getHeight() / 2f;
 
-        this.translate(translationX, translationY);
+        this.translate(trans_X, trans_Y);
         this.scale(1, -1);
 
-        value = (blueprint + 1) * 400;
+        value = (map + 1) * 400;
     }
 
 
@@ -79,11 +79,11 @@ public class Building extends Fixed {
         return damagePercentage;
     }
 
-    public double getFinancialLoss() {
+    public double getLoss() {
         return value * damagePercentage / 100f;
     }
 
-    public boolean allFiresPutOut() {
+    public boolean checkfirestatus() {
         for(Fire fire : fires) {
             if(fire.getSize() > 0) {
                 return false;
@@ -92,32 +92,29 @@ public class Building extends Fixed {
         return true;
     }
 
-    public void accumulateFireAreas() {
+    public void gatherfireareas() {
         if(fires.isEmpty()) {
             fireAreas = 0;
             return;
         }
-
         int[][] index = new int[fires.size()][fires.size()];
-        int i = 0, j = 0;
+        int q = 0, t = 0;
 
         for(Fire fireA : fires) {
             fireAreas += fireA.getArea();
             for(Fire fireB : fires) {
-                if(fireA == fireB || index[i][j] == 1) {
-                    j++;
+                if(fireA == fireB || index[q][t] == 1) {
+                    t++;
                 }
-                else if(is_Intersecting(fireA, fireB)) {
-                    fireAreas -= findIntersectionArea(fireA, fireB);
-
-                    // Mark as solved.
-                    //
-                    index[i][j] = index[j][i] = 1;
-                    j++;
+                else if(is_Intersecting(fireA, fireB))
+                {
+                    fireAreas -= Get_Intersection_Area(fireA, fireB);
+                    index[q][t] = index[t][q] = 1;
+                    t++;
                 }
             }
-            i++;
-            j = 0;
+            q++;
+            t = 0;
         }
     }
 
@@ -128,7 +125,8 @@ public class Building extends Fixed {
                                       fireB.getSize(), fireB.getSize());
     }
 
-    private double findIntersectionArea(Fire fireA, Fire fireB) {
+    private double Get_Intersection_Area(Fire fireA, Fire fireB)
+    {
         double distance = Math.hypot(fireB.getX() - fireA.getX(),
                                      fireB.getY() - fireA.getY());
 
@@ -162,12 +160,10 @@ public class Building extends Fixed {
 
     @Override
     public void localDraw(Graphics g, Point containerOrigin,
-                                      Point screenOrigin) {
-        g.setFont(getFont());
+                                      Point Origin_Screen) {
         int separator = 35;
-
+        g.setFont(getFont());
         g.drawRect(0, 0, getWidth(), getHeight());
-
         g.drawString("V  : " + value,
                      getWidth() + separator,
                      getHeight() - separator * 2);

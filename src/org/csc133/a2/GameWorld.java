@@ -14,9 +14,9 @@ import java.util.concurrent.TimeUnit;
 
 public class GameWorld {
     private static GameWorld instance;
-    private int NUMBER_OF_BUILDINGS;
+    private int BuildingsCount;
     private int fireAreaBudget;
-    private int numberOfFires;
+    private int FiresCount;
     private int defaultFireSize;
     private int initFuel;
     private long startOfElapsedTime;
@@ -42,8 +42,8 @@ public class GameWorld {
     public void init() {
         initFuel            = 25000;
         fireAreaBudget      = 1000;
-        NUMBER_OF_BUILDINGS = 3;
-        numberOfFires       = 0;
+        BuildingsCount = 3;
+        FiresCount       = 0;
         defaultFireSize     = 5;
         startOfElapsedTime  = TimeUnit.NANOSECONDS.toMillis(System.nanoTime());
         rand                 = new Random();
@@ -68,7 +68,7 @@ public class GameWorld {
     private void setNumberOfFires() {
         while(fireAreaBudget > 0) {
             fireSizes.add(expendFireBudget());
-            numberOfFires++;
+            FiresCount++;
         }
     }
 
@@ -90,10 +90,10 @@ public class GameWorld {
     }
 
     private void createBuildingAndFires() {
-        int firesToCreate = numberOfFires;
-        for (int i = NUMBER_OF_BUILDINGS; i > 0; i--) {
-            GameObjects.add(new Building(mapSize, i - 1));
-            for(int j = firesToCreate / i; j > 0; j--) {
+        int firesToCreate = FiresCount;
+        for (int q = BuildingsCount; q > 0; q--) {
+            GameObjects.add(new Building(mapSize, q - 1));
+            for(int t = firesToCreate / q; t > 0; t--) {
                 GameObjects.add(new Fire(mapSize,
                                                   fireSizes.get(0),
                                                   fireDispatch));
@@ -129,7 +129,7 @@ public class GameWorld {
     }
 
     private boolean willFireSpawn(Building building) {
-        if(building.allFiresPutOut()) {
+        if(building.checkfirestatus()) {
             return false;
         }
         return rand.nextInt((int) (700 - building.getDamagePercentage())) < 1;
@@ -175,16 +175,16 @@ public class GameWorld {
         return GameObjects.getRiver().get(0).getDimension();
     }
 
-    public void updateSelectedFire(Transform selectedFire) {
-        flightPath.updateSelectedFire(selectedFire);
+    public void FireUpdate_SEL(Transform selectedFire) {
+        flightPath.FireUpdate_SEL(selectedFire);
     }
 
     public int getNumOfBuildings() {
-        return NUMBER_OF_BUILDINGS;
+        return BuildingsCount;
     }
 
     public int getNumOfFires() {
-        return numberOfFires;
+        return FiresCount;
     }
 
     private Helicopter getHelicopter() {
@@ -202,7 +202,6 @@ public class GameWorld {
     }
 
     public void accelerate() {
-        System.out.println("Heli flying");
         getHelicopter().accelerate();
     }
 
@@ -244,7 +243,7 @@ public class GameWorld {
                 }
             }
         }
-        helicopter.dumpWater();
+        helicopter.emptywaterstorage();
     }
 
     private boolean helicopterHasWater(Helicopter helicopter) {
@@ -262,7 +261,7 @@ public class GameWorld {
     }
 
     private void updateNumOfFires(int updateValue) {
-        numberOfFires += updateValue;
+        FiresCount += updateValue;
     }
 
     private void grow() {
@@ -278,7 +277,7 @@ public class GameWorld {
 
     private void burnBuilding() {
         for(Building building : GameObjects.getBuildings()) {
-                building.accumulateFireAreas();
+                building.gatherfireareas();
                 building.setDamagePercentage();
         }
     }
@@ -312,17 +311,11 @@ public class GameWorld {
         return  Helicopter.getInstance().getFuel() > 0;
     }
 
-    public void restartGame() {
-        if(Dialog.show("Game Paused", "Are you sure you want to restart " +
-                       "the game?", "Yes, restart the game", "No")) {
-        }
-    }
-
     private void displayWinDialog() {
-        if(Dialog.show("Game Over", "You Won!" + "\nScore: " + getScore() +
-                       "\nPlay again?", "Heck Yeah!", "Some other time")) {
+        if(Dialog.show("Game Over", "You Won!" + "\nScore: " + getScore() +"\nPlay again?", "Heck Yeah!", "Some other time")) {
         }
-        else {
+        else
+        {
             exit();
         }
     }
@@ -354,7 +347,7 @@ public class GameWorld {
         for(Building building : GameObjects.getBuildings()) {
             totalDamagePercentage += building.getDamagePercentage();
         }
-        return totalDamagePercentage / NUMBER_OF_BUILDINGS;
+        return totalDamagePercentage / BuildingsCount;
     }
 
     private void displayLossDialog(String lossReason) {
@@ -373,22 +366,6 @@ public class GameWorld {
             Display.getInstance().exitApplication();
         }
     }
-
-    public void updateLocalTransforms() {
-        Helicopter.getInstance().updateLocalTransforms();
-    }
-
-
-    public String getHelicopterState() {
-        return getHelicopter().currentState();
-    }
-
-    private boolean isHeliFlying() {
-        return  getHelicopter().currentState().equals("Ready") ||
-                getHelicopter().currentState().equals("Can land");
-    }
-
-
     public void tick() {
         move(getElapsedTimeInMillis());
         spawnNewFires();

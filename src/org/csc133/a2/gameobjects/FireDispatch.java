@@ -16,31 +16,31 @@ public class FireDispatch implements Subject {
     }
 
     @Override
-    public void attach(Observer o) {
-        observers.add(o);
+    public void attach(Observer p) {
+        observers.add(p);
     }
 
     @Override
-    public void detach(Observer o) {
-        observers.remove(o);
+    public void detach(Observer p) {
+        observers.remove(p);
     }
 
     void setSelectedFire(Fire selected) {
         this.selected = selected;
-        notifyObservers();
-        updateSelectedFire();
+        alertObservers();
+        FireUpdate_SEL();
     }
 
     @Override
-    public void notifyObservers() {
-        for(Observer o : observers) {
-            o.update(selected);
+    public void alertObservers() {
+        for(Observer p : observers) {
+            p.update(selected);
         }
     }
 
-    private void updateSelectedFire() {
+    private void FireUpdate_SEL() {
         Transform fire = Transform.makeIdentity();
         fire.translate(selected.getX(), selected.getY());
-        GameWorld.getInstance().updateSelectedFire(fire);
+        GameWorld.getInstance().FireUpdate_SEL(fire);
     }
 }

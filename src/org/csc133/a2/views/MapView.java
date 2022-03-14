@@ -28,29 +28,19 @@ public class MapView extends Container {
         this.getAllStyles().setBgColor(ColorUtil.BLACK);
     }
 
-    public void setNumZoomWindows(int numWindows) {
-        this.numWindows = numWindows;
-        initZoomWindows();
-    }
-
     private void initZoomWindows() {
-        // This value determines the scale percentage to zoom out.
-        //
         float windowScale = 0.10f;
 
         winLeft[0]  = winBottom[0] = 0;
         winRight[0] = this.getWidth();
         winTop[0]   = this.getHeight();
 
-        // Each zoom out is scaled outward by windowScale percentage times
-        // the zoom iteration.
-        //
-        for(int i = 1; i < numWindows; i++) {
-            winLeft[i]   = winRight[0] - winRight[0] * (1 + i * windowScale);
-            winRight[i]  = winRight[0] * (1 + i * windowScale);
+        for(int q = 1; q < numWindows; q++) {
+            winLeft[q]   = winRight[0] - winRight[0] * (1 + q * windowScale);
+            winRight[q]  = winRight[0] * (1 + q * windowScale);
 
-            winBottom[i] = winTop[0] - winTop[0] * (1 + i * windowScale);
-            winTop[i]    = winTop[0] * (1 + i * windowScale);
+            winBottom[q] = winTop[0] - winTop[0] * (1 + q * windowScale);
+            winTop[q]    = winTop[0] * (1 + q * windowScale);
         }
     }
 
@@ -101,22 +91,18 @@ public class MapView extends Container {
         setupVTM(g);
 
         Point containerOrigin = new Point(this.getX(), this.getY());
-        Point screenOrigin = new Point(getAbsoluteX(), getAbsoluteY());
+        Point Origin_Screen = new Point(getAbsoluteX(), getAbsoluteY());
 
         for(GameObject go : gw.getGameObjectCollection()) {
-            go.draw(g, containerOrigin, screenOrigin);
+            go.draw(g, containerOrigin, Origin_Screen);
         }
 
         g.resetAffine();
     }
 
-    // TODO: Fix coordinates only being accurate when the screen isn't
-    //       zoomed out.
     @Override
     public void pointerPressed(int x, int y) {
-        // Accounts for the container origin being located in the bottom left
-        // corner for fires, and the height of the control cluster.
-        //
+
         x += this.getX();
         y  = this.getY() + this.getHeight() + gw.getControlClusterHeight() - y;
 

@@ -6,17 +6,13 @@ import org.csc133.a2.gameobjects.GameObject;
 
 public class Rectangle extends GameObject {
 
-    public Rectangle (int color, int w, int h,
-                      float tx, float ty,
-                      float sx, float sy,
-                      float degreesRotation) {
+    public Rectangle (int color, int w, int h, float translate_x, float translate_y, float scale_x, float scale_y, float Rotate_degree) {
 
         setColor(color);
         setDimensions(w, h);
-
-        translate(tx, ty);
-        scale(sx, sy);
-        rotate(degreesRotation);
+        translate(translate_x, translate_y);
+        scale(scale_x, scale_y);
+        rotate(Rotate_degree);
     }
 
 
@@ -28,7 +24,7 @@ public class Rectangle extends GameObject {
 
     @Override
     public void localDraw(Graphics g, Point containerOrigin,
-                                      Point screenOrigin) {
+                                      Point Origin_Screen) {
         g.fillRect(0, 0, getWidth(), getHeight());
     }
 }

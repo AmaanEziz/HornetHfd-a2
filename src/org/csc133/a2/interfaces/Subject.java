@@ -1,7 +1,7 @@
 package org.csc133.a2.interfaces;
 
 public interface Subject {
-    void attach(Observer o);
-    void detach(Observer o);
-    void notifyObservers();
+    void attach(Observer p);
+    void detach(Observer p);
+    void alertObservers();
 }

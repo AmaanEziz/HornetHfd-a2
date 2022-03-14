@@ -54,8 +54,6 @@ public class ControlCluster extends Container {
         settingsStyle.setBgColor(ColorUtil.LTGRAY);
         settingsStyle.setBgTransparency(255);
 
-        // Gives feedback to user by changing pressed buttons to white.
-        //
         button.getPressedStyle().setBgColor(ColorUtil.WHITE, true);
 
         return button;

@@ -39,7 +39,7 @@ public class Helipad extends Fixed {
 
     @Override
     public void localDraw(Graphics g, Point containerOrigin,
-                                      Point screenOrigin) {
+                                      Point Origin_Screen) {
 
         g.drawRect(0, 0, getWidth(), getWidth(), BORDER_THICKNESS);
         g.drawArc(HELIPAD_GAP, HELIPAD_GAP,
