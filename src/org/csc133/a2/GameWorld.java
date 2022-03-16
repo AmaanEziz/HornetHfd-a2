@@ -27,7 +27,6 @@ public class GameWorld {
     private ArrayList<Integer> fireSizes;
     private GameObjectCollection<GameObject> GameObjects;
     private FireDispatch fireDispatch;
-    private FlightPath flightPath;
 
 
     private GameWorld() {}
@@ -60,8 +59,6 @@ public class GameWorld {
         setNumberOfFires();
         createBuildingAndFires();
         setFireInBuilding();
-
-        flightPath = new FlightPath(getTakeOffPoint(), mapSize);
         GameObjects.add(Helicopter.getInstance());
     }
 
@@ -161,22 +158,6 @@ public class GameWorld {
 
     public int getControlClusterHeight() {
         return controlSize.getHeight();
-    }
-
-    public FlightPath getFlightPath() {
-        return flightPath;
-    }
-
-    public Transform getRiverOrigin() {
-        return GameObjects.getRiver().get(0).getTranslation();
-    }
-
-    public Dimension getRiverDimension() {
-        return GameObjects.getRiver().get(0).getDimension();
-    }
-
-    public void FireUpdate_SEL(Transform selectedFire) {
-        flightPath.FireUpdate_SEL(selectedFire);
     }
 
     public int getNumOfBuildings() {
