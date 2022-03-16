@@ -14,12 +14,11 @@ import org.csc133.a2.gameobjects.GameObject;
 
 public class MapView extends Container {
     private final GameWorld gw;
-    private final float[] winLeft   = {0, 0, 0};
-    private final float[] winRight  = {0, 0, 0};
-    private final float[] winTop    = {0, 0, 0};
-    private final float[] winBottom = {0, 0, 0};
+    private final float[] coordinates_left   = {0, 0, 0};
+    private final float[] coordinates_right  = {0, 0, 0};
+    private final float[] coordinates_top    = {0, 0, 0};
+    private final float[] coordinates_bottom = {0, 0, 0};
     private int mapIndex  = 0;
-    private int numWindows = 0;
 
     public MapView() {
         gw = GameWorld.getInstance();
@@ -29,48 +28,39 @@ public class MapView extends Container {
     }
 
     private void InitMap() {
-        float windowScale = 0.10f;
-        winLeft[0]  = winBottom[0] = 0;
-        winRight[0] = this.getWidth();
-        winTop[0]   = this.getHeight();
-
-        for(int q = 1; q < numWindows; q++) {
-            winLeft[q]   = winRight[0] - winRight[0] * (1 + q * windowScale);
-            winRight[q]  = winRight[0] * (1 + q * windowScale);
-
-            winBottom[q] = winTop[0] - winTop[0] * (1 + q * windowScale);
-            winTop[q]    = winTop[0] * (1 + q * windowScale);
-        }
+        coordinates_left[0]  = coordinates_bottom[0] = 0;
+        coordinates_right[0] = this.getWidth();
+        coordinates_top[0]   = this.getHeight();
     }
 
 
 
-    private Transform buildWorldToNDXform(float winWidth, float winHeight,
-                                          float winLeft, float winBottom) {
-        Transform tempTransform = Transform.makeIdentity();
-        tempTransform.scale(1 / winWidth, 1 / winHeight);
-        tempTransform.translate(-winLeft, -winBottom);
-        return tempTransform;
+    private Transform World_To_normalized_device(float windows_width, float windows_height,
+                                          float coordinates_left, float coordinates_bottom) {
+        Transform temporary_form = Transform.makeIdentity();
+        temporary_form.scale(1 / windows_width, 1 / windows_height);
+        temporary_form.translate(-coordinates_left, -coordinates_bottom);
+        return temporary_form;
     }
 
-    private Transform buildNDToDisplayXform(float displayWidth,
+    private Transform Normalized_device_To_Screen(float displayWidth,
                                             float displayHeight) {
-        Transform tempTransform = Transform.makeIdentity();
-        tempTransform.translate(0, displayHeight);
-        tempTransform.scale(displayWidth, -displayHeight);
-        return tempTransform;
+        Transform temporary_form = Transform.makeIdentity();
+        temporary_form.translate(0, displayHeight);
+        temporary_form.scale(displayWidth, -displayHeight);
+        return temporary_form;
     }
 
-    private void setupVTM(Graphics g) {
+    private void Make_Viewing_Transformation_Matrix(Graphics g) {
         Transform worldToND, ndToDisplay, theVTM;
 
-        float winH = winTop[mapIndex] - winBottom[mapIndex];
-        float winW = winRight[mapIndex] - winLeft[mapIndex];
+        float winH = coordinates_top[mapIndex] - coordinates_bottom[mapIndex];
+        float winW = coordinates_right[mapIndex] - coordinates_left[mapIndex];
 
-        worldToND = buildWorldToNDXform(winW, winH,
-                                        winLeft[mapIndex],
-                                        winBottom[mapIndex]);
-        ndToDisplay = buildNDToDisplayXform(getWidth(), getHeight());
+        worldToND = World_To_normalized_device(winW, winH,
+                                        coordinates_left[mapIndex],
+                                        coordinates_bottom[mapIndex]);
+        ndToDisplay = Normalized_device_To_Screen(getWidth(), getHeight());
 
         theVTM = ndToDisplay.copy();
         theVTM.concatenate(worldToND);
@@ -87,7 +77,7 @@ public class MapView extends Container {
     public void paint(Graphics g) {
         super.paint(g);
 
-        setupVTM(g);
+        Make_Viewing_Transformation_Matrix(g);
 
         Point containerOrigin = new Point(this.getX(), this.getY());
         Point Origin_Screen = new Point(getAbsoluteX(), getAbsoluteY());
