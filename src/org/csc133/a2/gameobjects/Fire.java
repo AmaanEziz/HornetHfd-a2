@@ -10,12 +10,6 @@ import java.util.Random;
 import static com.codename1.ui.CN.*;
 
 public class Fire extends Fixed implements Observer {
-    private FireState fireState;
-    private double size;
-    private boolean selected = false;
-    private final Random rand;
-    private final FireDispatch subject;
-
     @Override
     public void update(Observer x) {
         fireState.update(x);
@@ -173,4 +167,11 @@ public class Fire extends Fixed implements Observer {
                                       Point Origin_Screen) {
         fireState.localDraw(g, containerOrigin, Origin_Screen);
     }
+
+    private FireState fireState;
+    private double size;
+    private boolean selected = false;
+    private final Random rand;
+    private final FireDispatch subject;
+
 }

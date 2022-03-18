@@ -11,16 +11,6 @@ import java.util.Random;
 import static com.codename1.ui.CN.*;
 
 public class Building extends Fixed {
-    private final ArrayList<Fire> fires;
-    private double damagePercentage;
-    private int value;
-    private double fireAreas;
-    private final Random rand;
-    private final double[] x_change = {0.30, 0.10, 0.80};
-    private final double[] y_change = {0.80, 0.10, 0.10};
-    private final double[] WIDTHS  = {0.40, 0.10, 0.10};
-    private final double[] HEIGHTS = {0.15, 0.40, 0.40};
-
     public Building(Dimension mapSize, int map) {
         super(ColorUtil.rgb(255, 0, 0), mapSize, 0, 0);
         fireAreas = 0;
@@ -33,8 +23,8 @@ public class Building extends Fixed {
     }
 
     private void build(int map) {
-        setDimensions((int) (WIDTHS[map] * getMapSize().getWidth()),
-                      (int) (HEIGHTS[map] * getMapSize().getHeight()));
+        setDimensions((int) (width[map] * getMapSize().getWidth()),
+                      (int) (height[map] * getMapSize().getHeight()));
 
         double trans_X = getMapSize().getWidth() * x_change[map]
                             + getWidth() / 2f;
@@ -100,15 +90,15 @@ public class Building extends Fixed {
         int[][] index = new int[fires.size()][fires.size()];
         int q = 0, t = 0;
 
-        for(Fire fireA : fires) {
-            fireAreas += fireA.getArea();
-            for(Fire fireB : fires) {
-                if(fireA == fireB || index[q][t] == 1) {
+        for(Fire alpha_fire : fires) {
+            fireAreas += alpha_fire.getArea();
+            for(Fire beta_fire : fires) {
+                if(alpha_fire == beta_fire || index[q][t] == 1) {
                     t++;
                 }
-                else if(is_Intersecting(fireA, fireB))
+                else if(is_Intersecting(alpha_fire, beta_fire))
                 {
-                    fireAreas -= Get_Intersection_Area(fireA, fireB);
+                    fireAreas -= Get_Intersection_Area(alpha_fire, beta_fire);
                     index[q][t] = index[t][q] = 1;
                     t++;
                 }
@@ -118,31 +108,31 @@ public class Building extends Fixed {
         }
     }
 
-    private boolean is_Intersecting(Fire fireA, Fire fireB) {
-        return Rectangle2D.intersects(fireA.getX(),    fireA.getY(),
-                                      fireA.getSize(), fireA.getSize(),
-                                      fireB.getX(),    fireB.getY(),
-                                      fireB.getSize(), fireB.getSize());
+    private boolean is_Intersecting(Fire alpha_fire, Fire beta_fire) {
+        return Rectangle2D.intersects(alpha_fire.getX(),    alpha_fire.getY(),
+                                      alpha_fire.getSize(), alpha_fire.getSize(),
+                                      beta_fire.getX(),    beta_fire.getY(),
+                                      beta_fire.getSize(), beta_fire.getSize());
     }
 
-    private double Get_Intersection_Area(Fire fireA, Fire fireB)
+    private double Get_Intersection_Area(Fire alpha_fire, Fire beta_fire)
     {
-        double distance = Math.hypot(fireB.getX() - fireA.getX(),
-                                     fireB.getY() - fireA.getY());
+        double distance = Math.hypot(beta_fire.getX() - alpha_fire.getX(),
+                                     beta_fire.getY() - alpha_fire.getY());
 
-        if(distance < fireA.getRadius() + fireB.getRadius()) {
-            double a = fireA.getRadius() * fireA.getRadius();
-            double b = fireB.getRadius() * fireB.getRadius();
+        if(distance < alpha_fire.getRadius() + beta_fire.getRadius()) {
+            double a = alpha_fire.getRadius() * alpha_fire.getRadius();
+            double b = beta_fire.getRadius() * beta_fire.getRadius();
 
             double x = (a - b + distance * distance) / (2 * distance);
             double z = x * x;
             double y = Math.sqrt(a - z);
 
-            if(distance <= Math.abs(fireB.getRadius() - fireA.getRadius())) {
+            if(distance <= Math.abs(beta_fire.getRadius() - alpha_fire.getRadius())) {
                 return Math.PI * Math.min(a, b);
             }
-            return  a * Math.asin(y / fireA.getRadius()) +
-                    b * Math.asin(y / fireB.getRadius()) -
+            return  a * Math.asin(y / alpha_fire.getRadius()) +
+                    b * Math.asin(y / beta_fire.getRadius()) -
                     y * (x + Math.sqrt(z + b - a));
         }
         return 0;
@@ -171,4 +161,15 @@ public class Building extends Fixed {
                      getWidth() + separator,
                      getHeight() - separator);
     }
+    private final ArrayList<Fire> fires;
+    private double damagePercentage;
+    private int value;
+    private double fireAreas;
+    private final Random rand;
+    private final double[] x_change = {0.30, 0.10, 0.80};
+    private final double[] y_change = {0.80, 0.10, 0.10};
+    private final double[] width  = {0.40, 0.10, 0.10};
+    private final double[] height = {0.15, 0.40, 0.40};
+
 }
+
