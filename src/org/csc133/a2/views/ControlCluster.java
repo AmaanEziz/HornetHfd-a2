@@ -1,92 +1,85 @@
 package org.csc133.a2.views;
 
 import com.codename1.charts.util.ColorUtil;
-import com.codename1.ui.Button;
 import com.codename1.ui.Command;
-import com.codename1.ui.Container;
-import com.codename1.ui.Font;
-import com.codename1.ui.layouts.BorderLayout;
-import com.codename1.ui.layouts.GridLayout;
-import com.codename1.ui.plaf.Style;
 import org.csc133.a2.GameWorld;
 import org.csc133.a2.commands.*;
+import com.codename1.ui.Container;
+import com.codename1.ui.Button;
+import com.codename1.ui.layouts.BorderLayout;
 
 public class ControlCluster extends Container {
-    private final Container NavBarLeft  = new Container(new GridLayout(1, 3));
-    private final Container NavBarMid   = new Container(new GridLayout(1, 5));
-    private final Container NavBarRight = new Container(new GridLayout(1, 3));
-    private final Button bLeft;
-    private final Button bRight;
-    private final Button bFight;
-    private final Button bExit;
-    private final Button bDrink;
-    private final Button bBrake;
-    private final Button bAccel;
+    /**
+     * Figure out a way to place buttons in the center and right hand
+     * of this layout
+     */
 
-    public ControlCluster(MapView mv) {
-        setLayout(new BorderLayout());
+    private GameWorld gw;
 
+    private Button button;
+    private Button myTurnRight;
+    private Button myTurnLeft;
+    private Button fightFire;
+    private Button accelerate;
+    private Button decelerate;
+    private Button drink;
+    private Button exit;
 
-        this.getAllStyles().setBgColor(ColorUtil.WHITE);
-        this.getAllStyles().setBgTransparency(255);
+    private Container bottomLeftContainer;
+    private Container bottomRightContainer;
 
-        bLeft    = buttonMaker(new TurnLeft(), "Left");
-        bRight   = buttonMaker(new TurnRight(), "Right");
-        bFight   = buttonMaker(new Fight(), "Fight");
-        bExit    = buttonMaker(new Exit(), "Exit");
-        bDrink   = buttonMaker(new Drink(), "Drink");
-        bBrake   = buttonMaker(new Brake(), "Brake");
-        bAccel   = buttonMaker(new Accelerate(), "Accel");
-        Button.setSameWidth(bLeft, bRight, bFight, bDrink, bAccel, bBrake);
-        addButtons();
+    public ControlCluster(GameWorld gw){
+
+        this.gw = gw;
+
+        this.setLayout(new BorderLayout());
+
+        myTurnRight = new Button();
+        myTurnLeft = new Button();
+        fightFire = new Button();
+        accelerate = new Button();
+        decelerate = new Button();
+        drink = new Button();
+        exit = new Button();
+
+        bottomLeftContainer = new Container();
+        bottomRightContainer = new Container();
+
+        //Getting commands from GameWorld
+        myTurnRight = buttonMaker(new TurnRight(gw), "Right");
+        myTurnLeft = buttonMaker(new TurnLeft(gw), "Left");
+        fightFire = buttonMaker(new Fight(gw), "Fight");
+        accelerate = buttonMaker(new Accelerate(gw), "Accel");
+        decelerate = buttonMaker(new Break(gw), "Break");
+        drink = buttonMaker(new Drink(gw), "Drink");
+        exit = buttonMaker(new Exit(gw), "Exit");
+
+        //Adding buttons to container
+        bottomLeftContainer.add(myTurnRight);
+        bottomLeftContainer.add(myTurnLeft);
+        bottomLeftContainer.add(fightFire);
+
+        //Adding Buttons to right container
+        bottomRightContainer.add(drink);
+        bottomRightContainer.add(decelerate);
+        bottomRightContainer.add(accelerate);
+
+        //Adding container to control cluster container
+        this.addComponent(BorderLayout.WEST,bottomLeftContainer);
+        this.addComponent(BorderLayout.EAST,bottomRightContainer);
+        this.addComponent(BorderLayout.CENTER, exit);
+
     }
-
-    private Button buttonMaker(Command cmd, String btnText) {
-        Button button = new Button(btnText);
-        button.setCommand(cmd);
-
-        Style settingsStyle = button.getAllStyles();
-        settingsStyle.setFont(Font.createSystemFont(Font.FACE_SYSTEM,
-                                                    Font.STYLE_BOLD,
-                                                    Font.SIZE_MEDIUM));
-        settingsStyle.setFgColor(ColorUtil.BLUE);
-        settingsStyle.setBgColor(ColorUtil.LTGRAY);
-        settingsStyle.setBgTransparency(255);
-
-        button.getPressedStyle().setBgColor(ColorUtil.WHITE, true);
-
+    public Button buttonMaker(Command action, String actionName){
+        button = new Button();
+        this.getUnselectedStyle().setBgTransparency(255);
+        this.getUnselectedStyle().setBgColor(ColorUtil.WHITE);
+        this.getAllStyles().setPadding(RIGHT, 3);
+        this.getAllStyles().setPadding(LEFT, 3);
+        this.getAllStyles().setMargin(RIGHT, 3);
+        this.getAllStyles().setMargin(LEFT, 3);
+        button.setCommand(action);
         return button;
     }
 
-    private void addButtons() {
-        // Group buttons in a NavBar to make them easier to place.
-        //
-        NavBarLeft.add(bLeft);
-        NavBarLeft.add(bRight);
-        NavBarLeft.add(bFight);
-        NavBarMid.add(bExit);
-        NavBarRight.add(bDrink);
-        NavBarRight.add(bBrake);
-        NavBarRight.add(bAccel);
-
-        NavBarLeft.getAllStyles().setBgColor(ColorUtil.LTGRAY);
-        NavBarLeft.getAllStyles().setBgTransparency(255);
-        NavBarRight.getAllStyles().setBgColor(ColorUtil.LTGRAY);
-        NavBarRight.getAllStyles().setBgTransparency(255);
-
-
-        ((BorderLayout)this.getLayout()).setCenterBehavior(
-                                        BorderLayout.CENTER_BEHAVIOR_CENTER);
-        add(BorderLayout.WEST, NavBarLeft);
-        add(BorderLayout.CENTER, NavBarMid);
-        add(BorderLayout.EAST, NavBarRight);
-    }
-
-
-
-    @Override
-    public void laidOut() {
-        super.laidOut();
-        GameWorld.getInstance().layButtons(this.getWidth(), this.getHeight());
-    }
 }

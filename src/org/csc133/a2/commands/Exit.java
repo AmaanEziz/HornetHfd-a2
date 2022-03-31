@@ -5,12 +5,14 @@ import com.codename1.ui.events.ActionEvent;
 import org.csc133.a2.GameWorld;
 
 public class Exit extends Command {
-    public Exit() {
+    private GameWorld gw;
+
+    public Exit(GameWorld gw){
         super("Exit");
+        this.gw = gw;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent evt) {
-        GameWorld.getInstance().exit();
+    public void actionPerformed(ActionEvent e){
+        gw.quit();
     }
 }

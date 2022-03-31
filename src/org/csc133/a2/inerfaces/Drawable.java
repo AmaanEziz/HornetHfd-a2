@@ -1,8 +1,7 @@
-package org.csc133.a2.interfaces;
-
+package org.csc133.a2.inerfaces;
 import com.codename1.ui.Graphics;
 import com.codename1.ui.geom.Point;
 
 public interface Drawable {
-    public void draw (Graphics g, Point containerOrigin);
+    void draw(Graphics g, Point containerOrigin);
 }

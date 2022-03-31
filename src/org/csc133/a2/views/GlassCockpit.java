@@ -1,122 +1,72 @@
 package org.csc133.a2.views;
 
 import com.codename1.charts.util.ColorUtil;
-import com.codename1.ui.*;
-import com.codename1.ui.layouts.GridLayout;
 import org.csc133.a2.GameWorld;
-import org.csc133.a2.gameobjects.Building;
-import org.csc133.a2.gameobjects.Fire;
-import org.csc133.a2.gameobjects.Helicopter;
-
-class myLabel extends Label
-{
-    public myLabel(String text)
-    {
-        super(text);
-    }
-    void setValue(int val)
-    {
-        setText(Integer.toString(val));
-    }
-}
+import com.codename1.ui.layouts.GridLayout;
+import com.codename1.ui.Container;
+import com.codename1.ui.Label;
 
 
+public class GlassCockpit extends Container{
 
+    Label labelHeading;
+    Label labelSpeed;
+    Label labelFuel;
+    Label labelFires;
+    Label labelFireSize;
+    Label labelDamage;
+    Label labelLoss;
 
-public class GlassCockpit extends Container {
-    private final GameWorld gw;
-    private final myLabel heading;
-    private final myLabel speed;
-    private final myLabel fuel;
-    private final myLabel numFires;
-    private final myLabel totalFire;
-    private final myLabel damagePercent;
-    private final myLabel financialLoss;
+    Label labelHeadingValue;
+    Label labelSpeedValue;
+    Label labelFuelValue;
+    Label labelFiresValue;
+    Label labelFireSizeValue;
+    Label labelDamageValue;
+    Label labelLossValue;
 
-    public GlassCockpit() {
-        setLayout(new GridLayout(2, 7));
-        this.gw = GameWorld.getInstance();
-        this.getAllStyles().setBgTransparency(255);
-        this.getAllStyles().setBgColor(ColorUtil.WHITE);
+    int heading;
+    int speed;
+    int fuel;
+    int fires;
+    int fireSize;
+    int damage;
+    int loss;
 
-        heading       = LabelMaker( ColorUtil.rgb(255, 0, 0));
-        speed         = LabelMaker( ColorUtil.rgb(252, 118, 41));
-        fuel          = LabelMaker(ColorUtil.YELLOW);
-        numFires      = LabelMaker(ColorUtil.GREEN);
-        totalFire     = LabelMaker(ColorUtil.CYAN);
-        damagePercent = LabelMaker(ColorUtil.BLUE);
-        financialLoss = LabelMaker(ColorUtil.rgb(132, 41, 252));
-        addNavBarLabels();
-        addLabels();
-    }
+    private GameWorld gw;
 
-    private myLabel LabelMaker(int Color) {
-        myLabel dc = new myLabel("");
-        return dc;
-    }
+    public GlassCockpit(GameWorld gw){
+        this.gw = gw;
 
-    private void addNavBarLabels() {
-        add(labelMaker("Heading"));
-        add(labelMaker("Speed"));
-        add(labelMaker("Fuel"));
-        add(labelMaker("Fires"));
-        add(labelMaker("Total Fire Size"));
-        add(labelMaker("Damage %"));
-        add(labelMaker("Financial Loss $"));
+        this.setLayout(new GridLayout(2, 7));
+        this.add(labelHeading = new Label(" HEADING "));
+        this.add(labelSpeed = new Label(" SPEED "));
+        this.add(labelFuel = new Label(" FUEL "));
+        this.add(labelFires = new Label(" FIRES "));
+        this.add(labelFireSize = new Label(" FIRE SIZE "));
+        this.add(labelDamage = new Label ( "DAMAGE "));
+        this.add(labelLoss = new Label (" LOSS "));
+
+        this.add(labelHeadingValue = new Label ("" + heading));
+        this.add(labelSpeedValue = new Label ("" + speed));
+        this.add(labelFuelValue = new Label ("" + fuel));
+        this.add(labelFiresValue = new Label ("" + fires));
+        this.add(labelFireSizeValue = new Label ("" + fireSize));
+        this.add(labelDamageValue = new Label ("" + damage));
+        this.add(labelLossValue = new Label ("" + loss));
+        this.getUnselectedStyle().setBgTransparency(255);
+        this.getUnselectedStyle().setBgColor(ColorUtil.WHITE);
+
     }
 
-    private myLabel labelMaker(String text) {
-        myLabel lbl = new myLabel(text);
-        lbl.getAllStyles().setAlignment(CENTER);
-        lbl.getAllStyles().setFont(Font.createSystemFont(Font.FACE_SYSTEM,
-                                                         Font.STYLE_BOLD,
-                                                         Font.SIZE_MEDIUM));
-        return lbl;
+    public void update(){
+        labelHeadingValue.setText(gw.getHeading());
+        labelSpeedValue.setText(gw.getSpeed());
+        labelFuelValue.setText(gw.getFuel());
+        labelFiresValue.setText(gw.getFires());
+        labelFireSizeValue.setText(gw.getFireSize());
+        labelDamageValue.setText(gw.getDamage());
+        labelLossValue.setText(gw.getLoss());
     }
 
-    private void addLabels() {
-        add(heading);
-        add(speed);
-        add(fuel);
-        add(numFires);
-        add(totalFire);
-        add(damagePercent);
-        add(financialLoss);
-    }
-
-    public void updateDisplay() {
-        double totalFireSize    = 0;
-        double buildingDmg      = 0;
-        double totalFinanceLoss = 0;
-
-        for(Fire fire : gw.getGameObjectCollection().getFires()) {
-            totalFireSize += fire.getSize();
-        }
-
-        for(Building building : gw.getGameObjectCollection().getBuildings()) {
-            buildingDmg += building.getDamagePercentage();
-            totalFinanceLoss += building.getLoss();
-        }
-
-        updateHelicopterLbl(Helicopter.getInstance());
-        updateFireLbl((int) totalFireSize);
-        updateBuildingLbl((int) buildingDmg, (int) totalFinanceLoss);
-    }
-
-    private void updateHelicopterLbl(Helicopter helicopter) {
-        heading.setValue(helicopter.getHeading());
-        speed.setValue(helicopter.getSpeed());
-        fuel.setValue(helicopter.getFuel());
-    }
-
-    private void updateFireLbl(int totalFireSize) {
-        numFires.setValue(gw.getNumOfFires());
-        totalFire.setValue(totalFireSize);
-    }
-
-    private void updateBuildingLbl(int buildingDmg, int totalFinanceLoss) {
-        int percentage = buildingDmg/gw.getNumOfBuildings();
-        damagePercent.setValue(percentage);
-        financialLoss.setValue(totalFinanceLoss);
-    }
 }

@@ -10,58 +10,50 @@ import org.csc133.a2.views.ControlCluster;
 import org.csc133.a2.views.GlassCockpit;
 import org.csc133.a2.views.MapView;
 
+
+
 public class Game extends Form implements Runnable {
-    private final GameWorld gw;
-    private final MapView mv;
-    private final GlassCockpit gc;
-    private final ControlCluster cc;
+
+    protected GameWorld gw;
+    protected MapView mapView;
+    protected GlassCockpit cockPit;
+    protected ControlCluster controlCluster;
 
     public Game() {
-        setLayout(new BorderLayout());
-        this.getAllStyles().setBgColor(ColorUtil.BLACK);
+        gw = new GameWorld();
+        mapView = new MapView(gw);
+        cockPit = new GlassCockpit(gw);
+        controlCluster = new ControlCluster(gw);
 
-        gw = GameWorld.getInstance();
-        mv = new MapView();
-        gc = new GlassCockpit();
-        cc = new ControlCluster(mv);
+        this.setLayout(new BorderLayout());
+        this.add(BorderLayout.NORTH, cockPit);
+        this.add(BorderLayout.CENTER, mapView);
+        this.add(BorderLayout.SOUTH, controlCluster);
 
-        setUpCommands();
-        setUpViews();
-        setUpTimer();
-        show();
-        gw.init();
-    }
+        addKeyListener('Q', new Exit(gw));
+        addKeyListener(-93, new TurnLeft(gw));
+        addKeyListener(-94, new TurnRight(gw));
+        addKeyListener(-91, new Accelerate(gw));
+        addKeyListener(-92, new Break(gw));
+        addKeyListener('f', new Fight(gw));
+        addKeyListener('d', new Drink(gw));
 
-    private void setUpCommands() {
-        addKeyListener('Q', new Exit());
-        addKeyListener('f', new Fight());
-        addKeyListener('d', new Drink());
-        addKeyListener(-93, new TurnLeft());
-        addKeyListener(-94, new TurnRight());
-        addKeyListener(-91, new Accelerate());
-        addKeyListener(-92, new Brake());
-    }
-
-    private void setUpViews() {
-        this.add(BorderLayout.NORTH,  gc);
-        this.add(BorderLayout.CENTER, mv);
-        this.add(BorderLayout.SOUTH,  cc);
-    }
-
-    private void setUpTimer() {
         UITimer timer = new UITimer(this);
         timer.schedule(100, true, this);
+        this.getAllStyles().setBgColor(ColorUtil.BLACK);
+        this.show();
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+        //mapView.paint(g);
     }
 
     @Override
     public void run() {
-        gc.updateDisplay();
         gw.tick();
+        cockPit.update();
         repaint();
     }
 }
