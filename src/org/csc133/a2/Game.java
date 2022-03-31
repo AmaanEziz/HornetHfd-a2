@@ -33,13 +33,13 @@ public class Game extends Form implements Runnable {
     }
 
     private void setUpCommands() {
-        addKeyListener('Q', new ExitCommand());
-        addKeyListener('f', new FightCommand());
-        addKeyListener('d', new DrinkCommand());
-        addKeyListener(-93, new TurnLeftCommand());
-        addKeyListener(-94, new TurnRightCommand());
-        addKeyListener(-91, new AccelerateCommand());
-        addKeyListener(-92, new BrakeCommand());
+        addKeyListener('Q', new Exit());
+        addKeyListener('f', new Fight());
+        addKeyListener('d', new Drink());
+        addKeyListener(-93, new TurnLeft());
+        addKeyListener(-94, new TurnRight());
+        addKeyListener(-91, new Accelerate());
+        addKeyListener(-92, new Brake());
     }
 
     private void setUpViews() {

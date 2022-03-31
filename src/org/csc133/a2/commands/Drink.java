@@ -4,13 +4,14 @@ import com.codename1.ui.Command;
 import com.codename1.ui.events.ActionEvent;
 import org.csc133.a2.GameWorld;
 
-public class AccelerateCommand extends Command {
-    public AccelerateCommand() {
-        super("Accelerate");
+public class Drink extends Command {
+
+    public Drink() {
+        super("Drink");
     }
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        GameWorld.getInstance().accelerate();
+        GameWorld.getInstance().drink();
     }
 }

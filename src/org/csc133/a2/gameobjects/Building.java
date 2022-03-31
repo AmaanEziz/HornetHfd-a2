@@ -18,7 +18,6 @@ public class Building extends Fixed {
         rand = new Random();
         fires = new ArrayList<>();
         setFont(Font.createSystemFont(FACE_SYSTEM, STYLE_BOLD, SIZE_MEDIUM));
-
         build(map);
     }
 

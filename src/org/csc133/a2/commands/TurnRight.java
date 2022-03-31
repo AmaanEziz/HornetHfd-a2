@@ -4,13 +4,14 @@ import com.codename1.ui.Command;
 import com.codename1.ui.events.ActionEvent;
 import org.csc133.a2.GameWorld;
 
-public class BrakeCommand extends Command {
-    public BrakeCommand() {
-        super("Brake");
+public class TurnRight extends Command {
+
+    public TurnRight() {
+        super("Right");
     }
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        GameWorld.getInstance().brake();
+        GameWorld.getInstance().turnRight();
     }
 }

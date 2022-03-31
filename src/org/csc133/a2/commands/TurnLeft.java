@@ -4,13 +4,13 @@ import com.codename1.ui.Command;
 import com.codename1.ui.events.ActionEvent;
 import org.csc133.a2.GameWorld;
 
-public class ExitCommand extends Command {
-    public ExitCommand() {
-        super("Exit");
+public class TurnLeft extends Command {
+    public TurnLeft() {
+        super("Left");
     }
 
     @Override
     public void actionPerformed(ActionEvent evt) {
-        GameWorld.getInstance().exit();
+        GameWorld.getInstance().turnLeft();
     }
 }

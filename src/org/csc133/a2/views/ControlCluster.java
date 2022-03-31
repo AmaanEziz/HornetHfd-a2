@@ -10,7 +10,6 @@ import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.plaf.Style;
 import org.csc133.a2.GameWorld;
 import org.csc133.a2.commands.*;
-import org.csc133.a2.commands.*;
 
 public class ControlCluster extends Container {
     private final Container NavBarLeft  = new Container(new GridLayout(1, 3));
@@ -31,13 +30,13 @@ public class ControlCluster extends Container {
         this.getAllStyles().setBgColor(ColorUtil.WHITE);
         this.getAllStyles().setBgTransparency(255);
 
-        bLeft    = buttonMaker(new TurnLeftCommand(), "Left");
-        bRight   = buttonMaker(new TurnRightCommand(), "Right");
-        bFight   = buttonMaker(new FightCommand(), "Fight");
-        bExit    = buttonMaker(new ExitCommand(), "Exit");
-        bDrink   = buttonMaker(new DrinkCommand(), "Drink");
-        bBrake   = buttonMaker(new BrakeCommand(), "Brake");
-        bAccel   = buttonMaker(new AccelerateCommand(), "Accel");
+        bLeft    = buttonMaker(new TurnLeft(), "Left");
+        bRight   = buttonMaker(new TurnRight(), "Right");
+        bFight   = buttonMaker(new Fight(), "Fight");
+        bExit    = buttonMaker(new Exit(), "Exit");
+        bDrink   = buttonMaker(new Drink(), "Drink");
+        bBrake   = buttonMaker(new Brake(), "Brake");
+        bAccel   = buttonMaker(new Accelerate(), "Accel");
         Button.setSameWidth(bLeft, bRight, bFight, bDrink, bAccel, bBrake);
         addButtons();
     }
