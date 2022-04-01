@@ -320,7 +320,7 @@ public class GameWorld {
         for(GameObject go: gameObjects){
             if(go instanceof Fire){
                 Fire fire = (Fire)go;
-                temp += fire.getFireArea();
+                temp += fire.getSize();
             }
         }
         return String.valueOf(temp);

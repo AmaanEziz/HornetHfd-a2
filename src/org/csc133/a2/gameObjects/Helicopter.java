@@ -114,10 +114,14 @@ public class Helicopter extends Movable implements Steerable {
                     && this.getX() < fire.getX() + fire.size)
                     && (this.getY() > fire.getY()
                     && this.getY() < fire.getY() + fire.size)){
-                if (water > 0) {
+                if (water > 0)
+                {
                     int totalWater = water;
                     water -= totalWater;
-                    fire.size -= totalWater;
+                    if(fire.size>= totalWater)
+                        fire.size -= totalWater;
+                    else
+                        fire.size = 0 ;
                 }
             }
         }

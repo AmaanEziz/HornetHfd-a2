@@ -38,6 +38,11 @@ public class Fire extends Fixed{
         area = (int) (Math.PI * Math.pow(size /2, 2 ));
     }
 
+    @Override
+    public int getSize() {
+        return size;
+    }
+
     public int getFireArea(){
         updateFireArea();
         return this.area;

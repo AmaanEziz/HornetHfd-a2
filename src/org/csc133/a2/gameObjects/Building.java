@@ -102,7 +102,8 @@ public class Building extends Fixed{
         for(GameObject go : gameObjects){
             if(go instanceof Fire){
                 Fire fire = (Fire)go;
-                if(fireInBuilding(fire)){
+                if(fireInBuilding(fire))
+                {
                     value = (int) (value - (this.damage / 100000));
                     if(largetValue == 0){
                         largetValue = value;
