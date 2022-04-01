@@ -245,19 +245,19 @@ public class GameWorld {
     }
 
     public void headHelicopterLeft() {
-        helicopter.headLeft(-15);
+        helicopter.headLeft(+15);
     }
 
     public void headHelicopterRight() {
-        helicopter.headRight(+15);
+        helicopter.headRight(-15);
     }
 
     public void increaseSpeed() {
-        helicopter.addSpeed(-1);
+        helicopter.addSpeed(1);
     }
 
     public void decreaseSpeed() {
-        helicopter.addSpeed(1);
+        helicopter.addSpeed(-1);
     }
 
     /**
@@ -294,10 +294,7 @@ public class GameWorld {
 
     public String getHeading() {
         int heading = helicopter.getHeading();
-        if(heading == 360 || heading == -360){
-            heading = heading % 360;
-            helicopter.setHeading(0);
-        }
+        heading = Math.floorMod(heading,360);
         return String.valueOf(heading);
     }
 

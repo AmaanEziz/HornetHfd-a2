@@ -13,7 +13,10 @@ public abstract class Movable extends GameObject{
         this.speed = speed;
     }
 
-    public void setHeading(int heading) { this.heading = heading; }
+    public void setHeading(int heading)
+    {
+        this.heading = Math.floorMod(heading, 360);
+    }
 
     public int getSpeed(){
         return speed;
@@ -22,11 +25,11 @@ public abstract class Movable extends GameObject{
     public int getHeading(){ return heading; }
 
     public void headLeft(int addHeading){
-        heading += addHeading;
+        setHeading(heading += addHeading);
     }
 
     public void headRight(int addHeading){
-        heading += addHeading;
+        setHeading(heading += addHeading);
     }
 
     public void addSpeed(int addSpeed){
@@ -45,7 +48,7 @@ public abstract class Movable extends GameObject{
         angle = 90 + heading;
         deltaX = Math.cos(Math.toRadians(angle)) * speed;
         deltaY = Math.sin(Math.toRadians(angle)) * speed;
-        addLocation(deltaX, deltaY);
+        addLocation(-deltaX, -deltaY);
     }
 
 }

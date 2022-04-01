@@ -40,7 +40,7 @@ public class Helicopter extends Movable implements Steerable {
         int radius = 55;
         int centerX = (int)super.getX() + SIZE / 2;
         int centerY = (int)super.getY() + SIZE / 2;
-        double angle = Math.toRadians(this.getHeading() - 90);
+        double angle = Math.toRadians(-this.getHeading() - 90);
         double eX = centerX + radius * Math.cos(angle);
         double eY = centerY + radius * Math.sin(angle);
 
@@ -51,10 +51,7 @@ public class Helicopter extends Movable implements Steerable {
                         SIZE,
                         SIZE,
                         SIZE);
-        g.drawLine(centerX,
-                   centerY,
-                   (int) eX,
-                   (int) eY);
+        g.drawLine(centerX,  centerY, (int) eX, (int) eY);
         g.drawString("F  : " + fuel,
                      containerOrigin.getX(),
                   containerOrigin.getY() + 55);
@@ -73,8 +70,18 @@ public class Helicopter extends Movable implements Steerable {
     }
 
     public void addSpeed(int addSpeed) {
-        if (this.getSpeed() < MAX_SPEED ) {
-            super.addSpeed(addSpeed);
+        if(addSpeed == -1)
+        {
+            System.out.println("Decreasing Speed: "+this.getSpeed());
+            if (this.getSpeed() >= 1 ) {
+                super.addSpeed(addSpeed);
+            }
+        }
+        else if(addSpeed == 1)
+        {
+            if (this.getSpeed() < MAX_SPEED ) {
+                super.addSpeed(addSpeed);
+            }
         }
     }
 
