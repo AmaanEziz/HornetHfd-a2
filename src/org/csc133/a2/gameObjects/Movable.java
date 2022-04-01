@@ -48,7 +48,7 @@ public abstract class Movable extends GameObject{
         angle = 90 + heading;
         deltaX = Math.cos(Math.toRadians(angle)) * speed;
         deltaY = Math.sin(Math.toRadians(angle)) * speed;
-        addLocation(-deltaX, -deltaY);
+        addLocation(deltaX, -deltaY);
     }
 
 }
